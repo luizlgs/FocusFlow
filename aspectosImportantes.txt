@@ -1,1 +1,0 @@
-usar o compilador no modo c++20 pra usar o std::chrono::year_month_day
