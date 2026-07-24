@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/imagem_de_fundo_tela_inicial"
+    tools:context=".InitialScreenActivity">
+
+    <TextView
+        android:id="@+id/mainappname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="FocusFlow"
+        android:textColor="@color/black"
+        android:textFontWeight="300"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+
+    <LinearLayout
+        android:id="@+id/main_bar"
+        android:layout_width="0dp"
+        android:layout_height="123dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="72dp"
+        android:background="@drawable/caixa_bordas_redondas"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:padding="15dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/projectsbutton"
+            style="@style/buttonStyle"
+            android:background="#99808080"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp"
+            android:text="Projects"/>
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="0dp" />
+
+        <Button
+            android:id="@+id/tasksbutton"
+            style="@style/buttonStyle"
+            android:background="#99808080"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp"
+            android:text="Tarefas" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="0dp" />
+
+        <Button
+            android:id="@+id/pomodorosessionsbutton"
+            style="@style/buttonStyle"
+            android:background="#99808080"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp"
+            android:text="Nova sessão Pomodoro"
+
+            android:paddingHorizontal="0dp"
+            android:maxLines="2" />
+
+    </LinearLayout>
+
+
+    <ScrollView
+        android:id="@+id/dashboard_scrollview"
+        android:layout_width="370dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="284dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/caixa_bordas_redondas"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/dashboard_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/latest_tasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Tarefas feitas hoje"
+                android:textColor="@color/black"
+                android:textFontWeight="300"
+                android:textSize="18sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/tasksChart"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/sidebar_menu"
+        android:layout_width="151dp"
+        android:layout_height="0dp"
+        android:background="#C0C0C0"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="invisible"
+        tools:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/hellotext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:text="Hello, "
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/profilebutton"
+            style="@style/buttonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Perfil" />
+
+        <Button
+            android:id="@+id/historybutton"
+            style="@style/buttonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Histórico" />
+
+        <Button
+            android:id="@+id/statistics_button"
+            style="@style/buttonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:text="Estatísticas" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/sandwich_button"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitCenter"
+        android:src="@drawable/menu_sandwich"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dashboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="240dp"
+        android:gravity="center"
+        android:text="Dashboard"
+        android:textColor="@color/black"
+
+        android:textFontWeight="300"
+        android:textSize="22sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="invisible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
