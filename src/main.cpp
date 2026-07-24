@@ -58,7 +58,7 @@ int main() {
             }
 
             RequestsDB register_;
-            bool regiser_stat = register_.register_(user_data["name"].s(), 
+            bool regiser_stat = register_.register_(user_data["name"].s(),
                                                     user_data["email"].s(), 
                                                     user_data["age"].i(), 
                                                     user_data["pass1"].s(), 
@@ -118,7 +118,7 @@ int main() {
             return crow::response(200, projectID.dump()); //possui o id do projeto e um array de json com usuarios que possuem chave nome e email
         });
 
-        CROW_ROUTE(app, "/change_project_state").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+        CROW_ROUTE(app, "/end_project").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
             // Analisa o JSON enviado pelo Android
             auto user_data = crow::json::load(req.body);
 
@@ -128,7 +128,7 @@ int main() {
 
             RequestsDB requests_db;
 
-            nlohmann::json return_ = requests_db.change_project_state(user_data["id"].s());
+            nlohmann::json return_ = requests_db.end_project(user_data["id"].s());
 
             if (return_ == nullptr) {
                 return crow::response(400, "Não foi possível concluir o projeto");
@@ -143,7 +143,7 @@ int main() {
         });
 
         
-        CROW_ROUTE(app, "/change_task_state").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+        CROW_ROUTE(app, "/end_task").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
 
             auto user_data = crow::json::load(req.body);
 
@@ -153,7 +153,7 @@ int main() {
 
             RequestsDB requests_db;
 
-            nlohmann::json return_ = requests_db.change_task_state(user_data["id"].s());
+            nlohmann::json return_ = requests_db.end_task(user_data["id"].s());
 
             if (return_ == nullptr) {
                 return crow::response(400, "Não foi possível alterar o estado da task");
@@ -164,6 +164,33 @@ int main() {
             response["task_state"] = return_["task_state"];
             response["completion_date"] = return_["completion_date"];
             response["completion_time"] = return_["completion_time"];
+
+            return crow::response(200, response.dump());
+        });
+
+
+        CROW_ROUTE(app, "/end_pomodoro_session").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+
+            auto user_data = crow::json::load(req.body);
+
+            if (!user_data) {
+                return crow::response(400, "JSON Invalido");
+            }
+
+            RequestsDB requests_db;
+
+            nlohmann::json completed = requests_db.end_pomodoro_session(user_data["id"].s(), user_data["total_focus"].s(), user_data["timer"].s());
+
+            if (completed == nullptr) {
+                return crow::response(400, "Não foi possível encerrar a sessão pomodoro");
+            }
+
+            nlohmann::json response;
+            response["id"] = user_data["id"].i();
+            response["end_time"] = completed["end_time"];
+            response["date"] = completed["date"];
+            response["total_focus"] = completed["total_focus"];
+            response["timer"] = completed["timer"];
 
             return crow::response(200, response.dump());
         });
@@ -192,6 +219,32 @@ int main() {
             }
 
             return crow::response(200, return_.dump());
+        });
+
+        CROW_ROUTE(app, "/standby_pomodoro").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+            auto user_data = crow::json::load(req.body);
+            if (!user_data) return crow::response(400, "JSON Invalido");
+
+            RequestsDB requests_db;
+            nlohmann::json result = requests_db.standby_pomodoro(
+                user_data["id"].s(), 
+                user_data["total_focus"].s(), 
+                user_data["timer"].s(), 
+                user_data["small_pauses"].s(), 
+                user_data["big_pauses"].s(), 
+                user_data["is_pause"].s());
+
+            if (result == nullptr)
+                return crow::response(400, "Não foi possível salvar o estado da sessão");
+
+            nlohmann::json response;
+            response["id"] = user_data["id"].i();
+            response["timer"] = result["timer"];
+            response["total_focus"] = result["total_focus"];
+            response["small_pauses"] = result["small_pauses"];
+            response["big_pauses"] = result["big_pauses"];
+            response["is_pause"] = result["is_pause"];
+            return crow::response(200, response.dump());
         });
 
         //roda o servidor do crow na porta 18080
