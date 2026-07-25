@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -21,8 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class HistoryActivity extends AppCompatActivity {
-    private TableLayout tabela;
+    private TableLayout table;
     private ImageButton back_to_initial;
+    private TextView emptyhistorymessage;
+    private ScrollView scroll_table;
 
     //funcoes so quicksort para os JSONObjects das sessoes pomodoro, projects e tasks
     private JSONArray quicksortbyid(JSONArray arr){
@@ -110,9 +113,16 @@ public class HistoryActivity extends AppCompatActivity {
             for(int i=0; i<projects_json.length(); i++) all.put(projects_json.getJSONObject(i));
             for(int i=0; i<tasks_json.length(); i++) all.put(tasks_json.getJSONObject(i));
 
+            if(all.length() == 0){
+                emptyhistorymessage = findViewById(R.id.emptyhistorymessage);
+                emptyhistorymessage.setVisibility(View.VISIBLE);
+                scroll_table = findViewById(R.id.scroll_table);
+                scroll_table.setVisibility(View.INVISIBLE);
+            }
+
             JSONArray ordered = quicksortbyid(all);
 
-            tabela = findViewById(R.id.minha_tabela);
+            table = findViewById(R.id.historylayout);
             for(int i=ordered.length()-1; i>=0; i--){
                 JSONObject obj = ordered.getJSONObject(i);
 
@@ -139,7 +149,7 @@ public class HistoryActivity extends AppCompatActivity {
                 row.addView(makeCell(fim, 2));
                 row.addView(makeCell(estado, 3));
 
-                tabela.addView(row);
+                table.addView(row);
             }
 
 

@@ -17,8 +17,10 @@ int main() {
         CROW_ROUTE(app, "/login").methods(crow::HTTPMethod::POST)([](const crow::request& req){
             // Analisa o JSON que o Java enviou
             auto user_data = crow::json::load(req.body);
+            nlohmann::json err;
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
             if(user_data.has("email") && user_data.has("pass")){
                 RequestsDB request;
@@ -45,16 +47,20 @@ int main() {
                     return crow::response(200, response);
                 }
             }
-            return crow::response(406, "Not Acceptable");
+            err["error"] = "Not Acceptable";
+            return crow::response(406, err.dump());
         });
+
 
         //dados de registro
         CROW_ROUTE(app, "/register").methods(crow::HTTPMethod::POST)([](const crow::request& req){
             // Analisa o JSON que o Java enviou
             auto user_data = crow::json::load(req.body);
+            nlohmann::json err;
             
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
 
             RequestsDB register_;
@@ -64,10 +70,12 @@ int main() {
                                                     user_data["pass1"].s(), 
                                                     user_data["pass2"].s());
             if(!regiser_stat){
-                return crow::response(422, "Dados de registro inválidos");
+                err["error"] = "Inconsistencia nos dados recebidos";
+                return crow::response(422, err.dump());
             }
             
-            return crow::response(200, "Dados recebidos com sucesso!");
+            err["error"] = "Dados recebidos com sucesso!";
+            return crow::response(200, err.dump());
         });
 
 
@@ -75,9 +83,10 @@ int main() {
         CROW_ROUTE(app, "/new_task").methods(crow::HTTPMethod::POST)([](const crow::request& req){
             // Analisa o JSON que o Java enviou
             auto user_data = crow::json::load(req.body);
-            
+            nlohmann::json err;
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
             //CROW_LOG_INFO << user_data["title"].s() << " " << user_data["description"].s();
             RequestsDB register_new_task;
@@ -87,18 +96,22 @@ int main() {
                                        user_data["task_date"].s(), 
                                        user_data["creator_id"].s(), 
                                        user_data["priority"].s());
-            if(taskID == nullptr)
-                return crow::response(400, "Dados inválidos");
+            if(taskID == nullptr){
+                err["error"] = "Dados inválidos";
+                return crow::response(400, err.dump());
+            }
             
             return crow::response(200, taskID.dump());
         });
 
+
         CROW_ROUTE(app, "/new_project").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
             // Analisa o JSON que o Java enviou
             auto user_data = crow::json::load(req.body);
-
+            nlohmann::json err;
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
 
             RequestsDB register_new_project;
@@ -112,18 +125,22 @@ int main() {
                                         user_data["members"].s(),
                                         user_data["creator_id"].s());  
 
-            if (projectID == nullptr)
-                return crow::response(400, "Dados inválidos");
+            if (projectID == nullptr){
+                err["error"] = "Dados inválidos";
+                return crow::response(400, err.dump());
+            }
 
             return crow::response(200, projectID.dump()); //possui o id do projeto e um array de json com usuarios que possuem chave nome e email
         });
 
+
         CROW_ROUTE(app, "/end_project").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
             // Analisa o JSON enviado pelo Android
             auto user_data = crow::json::load(req.body);
-
+            nlohmann::json err;
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
 
             RequestsDB requests_db;
@@ -131,7 +148,8 @@ int main() {
             nlohmann::json return_ = requests_db.end_project(user_data["id"].s());
 
             if (return_ == nullptr) {
-                return crow::response(400, "Não foi possível concluir o projeto");
+                err["error"] = "Não foi possível concluir o projeto";
+                return crow::response(400, err.dump());
             }
 
             nlohmann::json response;
@@ -142,13 +160,15 @@ int main() {
             return crow::response(200, response.dump());
         });
 
+
         
         CROW_ROUTE(app, "/end_task").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
 
             auto user_data = crow::json::load(req.body);
-
+            nlohmann::json err;
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
 
             RequestsDB requests_db;
@@ -156,7 +176,8 @@ int main() {
             nlohmann::json return_ = requests_db.end_task(user_data["id"].s());
 
             if (return_ == nullptr) {
-                return crow::response(400, "Não foi possível alterar o estado da task");
+                err["error"] = "Não foi possível alterar o estado da task";
+                return crow::response(400, err.dump());
             }
 
             nlohmann::json response;
@@ -169,12 +190,14 @@ int main() {
         });
 
 
-        CROW_ROUTE(app, "/end_pomodoro_session").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
 
+        CROW_ROUTE(app, "/end_pomodoro_session").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
             auto user_data = crow::json::load(req.body);
+            nlohmann::json err;
 
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
 
             RequestsDB requests_db;
@@ -182,7 +205,8 @@ int main() {
             nlohmann::json completed = requests_db.end_pomodoro_session(user_data["id"].s(), user_data["total_focus"].s(), user_data["timer"].s());
 
             if (completed == nullptr) {
-                return crow::response(400, "Não foi possível encerrar a sessão pomodoro");
+                err["error"] = "Não foi possível encerrar a sessão pomodoro";
+                return crow::response(400, err.dump());
             }
 
             nlohmann::json response;
@@ -195,12 +219,13 @@ int main() {
             return crow::response(200, response.dump());
         });
 
+
         CROW_ROUTE(app, "/new_pomodoro").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
-
             auto user_data = crow::json::load(req.body);
-
+            nlohmann::json err;
             if (!user_data) {
-                return crow::response(400, "JSON Invalido");
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
             }
 
             RequestsDB requests_db;
@@ -215,15 +240,21 @@ int main() {
             );
 
             if (return_ == nullptr) {
-                return crow::response(400, "Não foi possível criar a sessão pomodoro");
+                err["error"] = "Não foi possível criar a sessão pomodoro";
+                return crow::response(400, err.dump());
             }
 
             return crow::response(200, return_.dump());
         });
 
+
         CROW_ROUTE(app, "/standby_pomodoro").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
             auto user_data = crow::json::load(req.body);
-            if (!user_data) return crow::response(400, "JSON Invalido");
+            nlohmann::json err;
+            if (!user_data){
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
+            }
 
             RequestsDB requests_db;
             nlohmann::json result = requests_db.standby_pomodoro(
@@ -234,8 +265,10 @@ int main() {
                 user_data["big_pauses"].s(), 
                 user_data["is_pause"].s());
 
-            if (result == nullptr)
-                return crow::response(400, "Não foi possível salvar o estado da sessão");
+            if (result == nullptr){
+                err["error"] = "Não foi possível salvar o estado da sessão";
+                return crow::response(400, err.dump());
+            }
 
             nlohmann::json response;
             response["id"] = user_data["id"].i();
@@ -244,6 +277,78 @@ int main() {
             response["small_pauses"] = result["small_pauses"];
             response["big_pauses"] = result["big_pauses"];
             response["is_pause"] = result["is_pause"];
+            return crow::response(200, response.dump());
+        });
+
+
+        CROW_ROUTE(app, "/delete_pomodoro_session").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+            auto user_data = crow::json::load(req.body);
+            nlohmann::json err;
+            if (!user_data) {
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
+            }
+
+            RequestsDB requests_db;
+
+            nlohmann::json deleted = requests_db.delete_pomodoro_session(user_data["id"].s());
+
+            if (deleted == nullptr) {
+                err["error"] = "Não foi possível apagar a sessão pomodoro";
+                return crow::response(400, err.dump());
+            }
+
+            nlohmann::json response;
+            response["id"] = deleted["id"];
+
+            return crow::response(200, response.dump());
+        });
+
+
+        CROW_ROUTE(app, "/delete_task").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+            auto user_data = crow::json::load(req.body);
+            nlohmann::json err;
+            if (!user_data) {
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
+            }
+
+            RequestsDB requests_db;
+
+            nlohmann::json deleted = requests_db.delete_task(user_data["id"].s());
+
+            if (deleted == nullptr) {
+                err["error"] = "Não foi possível apagar a tarefa";
+                return crow::response(400, err.dump());
+            }
+
+            nlohmann::json response;
+            response["id"] = deleted["id"];
+
+            return crow::response(200, response.dump());
+        });
+
+
+        CROW_ROUTE(app, "/delete_project").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+            auto user_data = crow::json::load(req.body);
+            nlohmann::json err;
+            if (!user_data) {
+                err["error"] = "JSON Invalido";
+                return crow::response(400, err.dump());
+            }
+
+            RequestsDB requests_db;
+
+            nlohmann::json deleted = requests_db.delete_project(user_data["id"].s());
+
+            if (deleted == nullptr) {
+                err["error"] = "Não foi possível apagar o projeto";
+                return crow::response(400, err.dump());
+            }
+
+            nlohmann::json response;
+            response["id"] = deleted["id"];
+
             return crow::response(200, response.dump());
         });
 

@@ -1,8 +1,12 @@
 #include "../include/RequestsDB.hpp"
 
+
 std::optional<pqxx::row> RequestsDB::login(std::string email, std::string pass) {
     //CROW_LOG_INFO << email << " " << pass;
     try {
+        if(!is_valid_email(email) || has_a_empty_field({email, pass})){
+            return std::nullopt;
+        }
         //conexão com o banco de dados
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
 
@@ -10,17 +14,19 @@ std::optional<pqxx::row> RequestsDB::login(std::string email, std::string pass) 
 
         pqxx::result rows = connection_.exec_params(
             "SELECT * FROM Users WHERE email = $1;",
-            email
-        );
+            email);
         connection_.commit();
         
-        if(rows.empty()){
+        if(rows.empty() || rows.size() != 1){
             return std::nullopt;
         }
-        if(rows.size() == 1)
-            return rows[0];
+        
+        std::string stored_hash = rows[0]["password"].c_str();
+        if (verify_password(pass, stored_hash))
+            return rows[0];    
         else
-            return std::nullopt; //caso em que ha mais de um úsuario com o mesmo email (se acontecer há algo de errado)     
+            return std::nullopt;
+        
         
     }
     catch(const std::exception &e){
@@ -31,7 +37,7 @@ std::optional<pqxx::row> RequestsDB::login(std::string email, std::string pass) 
 
 bool RequestsDB::register_(std::string name, std::string email, int age, std::string pass1, std::string pass2){
     bool request_validation = false;
-    if(pass1 != pass2){
+    if(pass1 != pass2 || !is_valid_email(email) || has_a_empty_field({name, email, pass1, pass2}) || age < 0){
         return false;
     }
     try {
@@ -44,24 +50,23 @@ bool RequestsDB::register_(std::string name, std::string email, int age, std::st
             "SELECT * FROM Users WHERE email = $1;",
             email
         );
-        if(!rows.empty()){
+        if(pass1 != pass2 || !rows.empty()){
             return false;
         }
         else{
             pqxx::result rows2 = connection_.exec_params(
                 "insert into Users (name, age, email, password) values ($1, $2, $3, $4);",
-                name, age, email, pass1
-            );
+                name, age, email, hash_password(pass1));
         }
         
         connection_.commit();
         return true;
     }
     catch(const std::exception &e){
+        CROW_LOG_INFO << "Erro: " << e.what();
         std::cerr << "Error to connect to db: " << e.what() << std::endl;
     }
     return false;
-
 }
 
 nlohmann::json RequestsDB::get_projects(int user_id){
@@ -229,6 +234,7 @@ nlohmann::json RequestsDB::get_pomodorosessions(int user_id){
 
 nlohmann::json RequestsDB::new_task(std::string title, std::string description, std::string task_date, std::string user_id, std::string priority){
     try{
+        if(has_a_empty_field({title, description, task_date, user_id, priority}) || is_in_past(task_date)) return nullptr;
         //conexão com o banco de dados
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
@@ -258,42 +264,14 @@ nlohmann::json RequestsDB::new_task(std::string title, std::string description, 
     }
 }
 
-std::string RequestsDB::getMembersIds(std::string membersEmails, pqxx::work& connection_) {
-    std::stringstream ss(membersEmails);
-    std::string email;
-    std::vector<int> ids;
-
-    while (ss >> email) {
-        pqxx::result rows = connection_.exec_params(
-            "SELECT id FROM Users WHERE email = $1;",
-            email
-        );
-
-        if (!rows.empty()) {
-            ids.push_back(rows[0]["id"].as<int>());
-        }
-    }
-
-    std::string membersArray = "{";
-
-    for (size_t i = 0; i < ids.size(); i++) {
-        membersArray += std::to_string(ids[i]);
-
-        if (i < ids.size() - 1)
-            membersArray += ",";
-    }
-
-    membersArray += "}";
-
-    return membersArray;
-}
 
 nlohmann::json RequestsDB::new_project(std::string title, std::string description, std::string start_date, std::string delivery_date, std::string members, std::string user_id) {
+    if(is_in_past(delivery_date) || has_a_empty_field({title, description, start_date, delivery_date, members})) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
 
-        std::string membersIds = getMembersIds(members, connection_);
+        std::string membersIds = getMembersIds(members, connection_, user_id);
 
         pqxx::result rows = connection_.exec_params(
             "INSERT INTO Projects (title, description, start_date, delivery_date, members, user_id, project_state) "
@@ -342,6 +320,7 @@ nlohmann::json RequestsDB::new_project(std::string title, std::string descriptio
 }
 
 nlohmann::json RequestsDB::new_pomodoro(std::string title, std::string description, std::string user_id, std::string blocks, std::string short_pause, std::string big_pause){
+    if(!is_a_valid_time(blocks) || !is_a_valid_time(short_pause) || !is_a_valid_time(big_pause) || has_a_empty_field({title, description})) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
@@ -381,6 +360,7 @@ nlohmann::json RequestsDB::new_pomodoro(std::string title, std::string descripti
 
 
 nlohmann::json RequestsDB::end_project(std::string project_id) {
+    if(has_a_empty_field({project_id})) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
@@ -416,6 +396,7 @@ nlohmann::json RequestsDB::end_project(std::string project_id) {
 }
 
 nlohmann::json RequestsDB::end_task(std::string task_id) {
+    if(has_a_empty_field({task_id})) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
@@ -463,6 +444,7 @@ nlohmann::json RequestsDB::end_task(std::string task_id) {
 }
 
 nlohmann::json RequestsDB::end_pomodoro_session(std::string session_id, std::string total_focus, std::string timer_) {
+    if(has_a_empty_field({session_id, total_focus, timer_}) || !is_a_valid_time(total_focus) || !is_a_valid_time(timer_)) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
@@ -501,6 +483,7 @@ nlohmann::json RequestsDB::end_pomodoro_session(std::string session_id, std::str
 }
 
 nlohmann::json RequestsDB::standby_pomodoro(std::string session_id, std::string total_focus, std::string timer, std::string small_pauses, std::string big_pauses, std::string is_pause) {
+    if(has_a_empty_field({session_id, is_pause}) || !is_a_valid_time(total_focus) || !is_a_valid_time(timer) || !is_a_valid_time(small_pauses) || !is_a_valid_time(big_pauses)) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
@@ -536,5 +519,179 @@ nlohmann::json RequestsDB::standby_pomodoro(std::string session_id, std::string 
     }
 }
 
+std::string RequestsDB::hash_password(const std::string& password) {
+    char hashed[crypto_pwhash_STRBYTES];
+    if (crypto_pwhash_str(hashed, password.c_str(), password.size(), crypto_pwhash_OPSLIMIT_INTERACTIVE, crypto_pwhash_MEMLIMIT_INTERACTIVE) != 0) {
+        throw std::runtime_error("Memória insuficiente para gerar o hash");
+    }
+    return std::string(hashed);
+}
+
+bool RequestsDB::verify_password(const std::string& password, const std::string& stored_hash) {
+    return crypto_pwhash_str_verify(stored_hash.c_str(), password.c_str(), password.size()) == 0;
+}
+
+nlohmann::json RequestsDB::delete_pomodoro_session(std::string session_id) {
+    if(has_a_empty_field({session_id})) return nullptr;
+    try {
+        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
+        pqxx::work connection_(db);
+
+        pqxx::result rows = connection_.exec_params(
+            "DELETE FROM PomodoroSessions WHERE id = $1 RETURNING id;",
+            session_id
+        );
+
+        if (rows.empty()) {
+            throw std::runtime_error("Sessão pomodoro não encontrada.");
+        }
+
+        connection_.commit();
+
+        nlohmann::json response;
+        response["id"] = rows[0]["id"].as<int>();
+
+        return response;
+
+    } catch (const std::exception &e) {
+        std::cerr << "Error to connect to db: " << e.what() << std::endl;
+        return nullptr;
+    }
+}
+
+nlohmann::json RequestsDB::delete_task(std::string task_id) {
+    if(has_a_empty_field({task_id})) return nullptr;
+    try {
+        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
+        pqxx::work connection_(db);
+
+        pqxx::result rows = connection_.exec_params(
+            "DELETE FROM Tasks WHERE id = $1 RETURNING id;",
+            task_id
+        );
+
+        if (rows.empty()) {
+            throw std::runtime_error("Tarefa não encontrada.");
+        }
+
+        connection_.commit();
+
+        nlohmann::json response;
+        response["id"] = rows[0]["id"].as<int>();
+
+        return response;
+
+    } catch (const std::exception &e) {
+        std::cerr << "Error to connect to db: " << e.what() << std::endl;
+        return nullptr;
+    }
+}
+
+nlohmann::json RequestsDB::delete_project(std::string project_id) {
+    if(has_a_empty_field({project_id})) return nullptr;
+    try {
+        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
+        pqxx::work connection_(db);
+
+        pqxx::result rows = connection_.exec_params(
+            "DELETE FROM Projects WHERE id = $1 RETURNING id;",
+            project_id
+        );
+
+        if (rows.empty()) {
+            throw std::runtime_error("Projeto não encontrado.");
+        }
+
+        connection_.commit();
+
+        nlohmann::json response;
+        response["id"] = rows[0]["id"].as<int>();
+
+        return response;
+
+    } catch (const std::exception &e) {
+        std::cerr << "Error to connect to db: " << e.what() << std::endl;
+        return nullptr;
+    }
+}
+
+std::string RequestsDB::getMembersIds(std::string membersEmails, pqxx::work& connection_, std::string creator_id) {
+    std::stringstream ss(membersEmails);
+    std::string email;
+    std::vector<int> ids;
+
+    while (ss >> email) {
+        pqxx::result rows = connection_.exec_params(
+            "SELECT id FROM Users WHERE email = $1;",
+            email
+        );
+
+        if (!rows.empty()) {
+            ids.push_back(rows[0]["id"].as<int>());
+        }
+    }
+
+    std::string membersArray = "{" + creator_id + ",";
+
+    for (size_t i = 0; i < ids.size(); i++) {
+        membersArray += std::to_string(ids[i]);
+
+        if (i < ids.size() - 1)
+            membersArray += ",";
+    }
+
+    membersArray += "}";
+
+    return membersArray;
+}
+
+
+bool RequestsDB::is_valid_email(const std::string& email) {
+    static const std::regex pattern(R"(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)");
+    return std::regex_match(email, pattern);
+}
+
+bool RequestsDB::has_a_empty_field(std::vector<std::string> values){
+    for(auto v:values){
+        if(v.empty()) return true;
+    }
+    return false;
+}
+
+bool RequestsDB::is_in_past(const std::string& dataStr) {
+    // Obtém a data atual do sistema
+    std::time_t agora = std::time(nullptr);
+    std::tm* tempoLocal = std::localtime(&agora);
+    
+    char buffer[11];
+    // Formata a data atual como "YYYY-MM-DD"
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d", tempoLocal);
+    std::string dataAtual(buffer);
+    
+    // Comparação direta de strings no formato YYYY-MM-DD
+    return dataStr < dataAtual;
+}
+
+bool RequestsDB::is_a_valid_time(const std::string& time) {
+    // Valida o formato estrito XX:XX:XX usando expressão regular
+    std::regex formato("^([0-9]{2}):([0-9]{2}):([0-9]{2})$");
+    std::smatch grupos;
+
+    if (!std::regex_match(time, grupos, formato)) {
+        return false; 
+    }
+
+    // Extrai os números convertendo os grupos capturados
+    int horas = std::stoi(grupos[1].str());
+    int minutos = std::stoi(grupos[2].str());
+    int segundos = std::stoi(grupos[3].str());
+
+    // Valida os limites lógicos do relógio
+    if (horas < 0 || horas > 23) return false;
+    if (minutos < 0 || minutos > 59) return false;
+    if (segundos < 0 || segundos > 59) return false;
+
+    return true;
+}
 
 

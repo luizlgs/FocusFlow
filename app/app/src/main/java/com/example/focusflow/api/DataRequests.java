@@ -1,7 +1,6 @@
 package com.example.focusflow.api;
 
 import android.util.Log;
-
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -12,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
+
 public class DataRequests {
     private AtomicBoolean post_stat = new AtomicBoolean(false);
     private AtomicBoolean get_stat = new AtomicBoolean(false);
@@ -20,6 +21,7 @@ public class DataRequests {
         void onSuccess(JSONObject json);
         void onError(String error);
     }
+
 
     public boolean sendData(JSONObject user_data, String dataType, OnDataReceived callback){
         Thread t = new Thread(() -> {
@@ -58,6 +60,7 @@ public class DataRequests {
 
                     Log.d("RespostaServidor", textAnswer.toString());
                     JSONObject receivedJson= new JSONObject(textAnswer.toString());
+
                     callback.onSuccess(receivedJson);
 
                     post_stat.set(true);
@@ -83,56 +86,6 @@ public class DataRequests {
         }
 
         return post_stat.get();
-    }
-
-    //faz um request do tipo /dataType do usuario userID e trata o JSON recebido em onSucess
-    public boolean receiveData(String dataType, OnDataReceived callback){
-        Thread t = new Thread(() -> {
-            try {
-                URL url = new URL("http://192.168.18.8:18080/"+dataType);
-                HttpURLConnection conexao = (HttpURLConnection) url.openConnection();
-                conexao.setRequestMethod("GET");
-
-                int answercode = conexao.getResponseCode();
-
-                if (answercode == HttpURLConnection.HTTP_OK) {
-
-                    // 2. Abre o túnel para ler a resposta da rede
-                    InputStream inputStream = conexao.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder textAnswer = new StringBuilder();
-                    String linha;
-
-                    while ((linha = reader.readLine()) != null) {
-                        textAnswer.append(linha);
-                    }
-                    reader.close();
-                    inputStream.close();
-
-                    JSONObject receivedJson= new JSONObject(textAnswer.toString());
-                    callback.onSuccess(receivedJson);
-                    get_stat.set(true);
-
-                } else {
-                    Log.e("Servidor", "Erro no servidor. Código: " + answercode);
-                    get_stat.set(false);
-                }
-
-            } catch (Exception e) {
-                Log.e("ServidorCrow", "Erro na requisição: " + e.getMessage());
-                callback.onError("Falha: " + e.getMessage());
-                get_stat.set(false);
-            }
-        });
-        t.start();
-
-        try {
-            t.join(); // Faz a thread principal esperar esta thread acabar para retornar a situacao do request
-        } catch (InterruptedException e) {
-            Log.e("Erro", "Thread interrompida");
-        }
-
-        return get_stat.get();
     }
 
 }

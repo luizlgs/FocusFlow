@@ -32,13 +32,13 @@ import java.util.Locale;
 public class StatisticsActivity extends AppCompatActivity {
     private ImageButton back_to_initial;
 
-    private boolean is3months_ago(String date, String time) {
+    private boolean is6months_ago(String date, String time) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             long task_milis = sdf.parse(date + " " + time).getTime();   // millis da task
 
             Calendar cutoff = Calendar.getInstance();
-            cutoff.add(Calendar.MONTH, -3);            // agora menos 6 meses (respeita os meses reais)
+            cutoff.add(Calendar.MONTH, -6);            // agora menos 6 meses (respeita os meses reais)
             long cutoff_milis = cutoff.getTimeInMillis();
 
             long now = System.currentTimeMillis();
@@ -53,7 +53,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
         // corte de 3 meses e total de dias no período
         Calendar cut = Calendar.getInstance();
-        cut.add(Calendar.MONTH, -3);
+        cut.add(Calendar.MONTH, -6);
         long cutoff = cut.getTimeInMillis();
         long now = System.currentTimeMillis();
         int totalDays = (int) ((now - cutoff) / dayMillis) + 1;
@@ -146,7 +146,7 @@ public class StatisticsActivity extends AppCompatActivity {
                 String date = pomodoro_sessions_json.getJSONObject(i).optString("date", "");
                 if (end_time.isEmpty()) continue;   // sessão não encerrada, pula
 
-                if (is3months_ago(date, end_time.split("\\.")[0]))
+                if (is6months_ago(date, end_time.split("\\.")[0]))
                     session_dates.add(date);        // guarda a data de conclusão
             }
 
@@ -156,7 +156,7 @@ public class StatisticsActivity extends AppCompatActivity {
                 if (completion_date.isEmpty()) continue;   // projeto não concluído, pula
 
                 //não salvo a hora em que um projeto é concluido ja que projetos são processos mais demorados
-                if (is3months_ago(completion_date, "00:00:00"))
+                if (is6months_ago(completion_date, "00:00:00"))
                     project_dates.add(completion_date);
             }
 
@@ -166,11 +166,11 @@ public class StatisticsActivity extends AppCompatActivity {
                 String current_task_completion_date = tasks_json.getJSONObject(i).optString("completion_date", "");
                 if(current_task_completion_time.isEmpty()) continue;
 
-                if(is3months_ago(current_task_completion_date, current_task_completion_time.split("\\.")[0]))
+                if(is6months_ago(current_task_completion_date, current_task_completion_time.split("\\.")[0]))
                     task_dates.add(current_task_completion_date);
             }
 
-            plotByDay(task_dates,    R.id.tasksChart,    "Tarefas concluídas");
+            plotByDay(task_dates, R.id.tasksChart, "Tarefas concluídas");
             plotByDay(session_dates, R.id.sessionsChart, "Sessões concluídas");
             plotByDay(project_dates, R.id.projectsChart, "Projetos concluídos");
 

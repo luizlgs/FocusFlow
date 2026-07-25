@@ -1,12 +1,14 @@
 package com.example.focusflow;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,8 @@ import com.example.focusflow.api.Acess;
 public class RegisterScreenActivity extends AppCompatActivity {
     private ImageButton back_button;
     private Button register_button;
+    TextView account_created;
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -64,25 +68,39 @@ public class RegisterScreenActivity extends AppCompatActivity {
 
                 EditText ageField = findViewById(R.id.register_age_field);
                 String ageString = ageField.getText().toString();
+
+                account_created = findViewById(R.id.account_created);
                 int age=0;
-                if (!ageString.isEmpty()) {
-                    age = Integer.parseInt(ageString);
+                try {
+                    if (!ageString.isEmpty()) {
+                        age = Integer.parseInt(ageString);
+                    }
+                }catch (NumberFormatException e) {
+                    account_created.setTextColor(Color.parseColor("#DC143C"));
+                    account_created.setText("Dados de registro inválidos");
+                    account_created.setVisibility(View.VISIBLE);
+                    return;
                 }
 
                 Acess register = new Acess(RegisterScreenActivity.this);
-
                 Log.d("TesteRegistro", "Dados lidos: " + name + " | " + email + " | " + age + " | " + pass1);
                 if(register.sendRegistryData(name, email, age, pass1, pass2)){
-                    findViewById(R.id.account_created).setVisibility(View.VISIBLE);
+                    account_created.setTextColor(Color.parseColor("#32CD32"));
+                    account_created.setText("Conta criada com sucesso!");
+                    account_created.setVisibility(View.VISIBLE);
                     new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            // Este código roda AUTOMATICAMENTE após 3 segundos
                             Intent intent = new Intent(RegisterScreenActivity.this, MainActivity.class);
                             startActivity(intent);
-                            finish(); // Opcional: fecha a tela de registro para o usuário não voltar nela
+                            finish();
                         }
-                    }, 500);
+                    }, 200);
+                }
+                else{
+                    account_created.setTextColor(Color.parseColor("#DC143C"));
+                    account_created.setText("Dados de registro inválidos");
+                    account_created.setVisibility(View.VISIBLE);
                 }
             }
         });

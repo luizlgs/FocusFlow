@@ -9,7 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.focusflow.api.CreateObjects;
+import com.example.focusflow.api.DeleteObjects;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,8 +30,11 @@ import java.util.Locale;
 public class PomodoroSessionActivity extends AppCompatActivity {
     private ImageButton new_pomodorosession_button;
     private ImageButton back_from_new_pomodorosession_button;
-    private Button create_pomodorosession_button;
     private ImageButton back_to_initial;
+    private ImageButton delete_pomodoro_button;
+    private Button create_pomodorosession_button;
+    EditText session_delete_id_field;
+    ScrollView delete_pomodorosession_scrollview;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -157,13 +163,25 @@ public class PomodoroSessionActivity extends AppCompatActivity {
                 String sessionBigPause = session_big_pause_field.getText().toString().trim();
                 String sessionBlocks = session_blocks_field.getText().toString().trim();
 
-                int shortPauseMinutes = Integer.parseInt(sessionShortPause);
-                int bigPauseMinutes = Integer.parseInt(sessionBigPause);
-                int blocksMinutes = Integer.parseInt(sessionBlocks);
+                int shortPauseMinutes;
+                int bigPauseMinutes;
+                int blocksMinutes;
+
+                try {
+                    shortPauseMinutes = Integer.parseInt(sessionShortPause);
+                    bigPauseMinutes = Integer.parseInt(sessionBigPause);
+                    blocksMinutes = Integer.parseInt(sessionBlocks);
+                } catch (NumberFormatException e) {
+                    TextView invalidData = findViewById(R.id.invalid_data);
+                    invalidData.setText("Dados inválidos");
+                    invalidData.setVisibility(View.VISIBLE);
+                    return;
+                }
 
                 String sessionShortPauseFormatted = String.format(Locale.getDefault(), "%02d:%02d:00", shortPauseMinutes / 60, shortPauseMinutes % 60);
                 String sessionBigPauseFormatted = String.format(Locale.getDefault(), "%02d:%02d:00", bigPauseMinutes / 60, bigPauseMinutes % 60);
                 String sessionBlocksFormatted = String.format(Locale.getDefault(), "%02d:%02d:00", blocksMinutes / 60, blocksMinutes % 60);
+
 
                 CreateObjects new_pomodoro = new CreateObjects(PomodoroSessionActivity.this);
                 new_pomodoro.createPomodoroSession(
@@ -195,5 +213,94 @@ public class PomodoroSessionActivity extends AppCompatActivity {
             }
         });
 
+        delete_pomodoro_button = findViewById(R.id.delete_pomodoro_button);
+        session_delete_id_field = findViewById(R.id.session_delete_id_field);
+        delete_pomodorosession_scrollview = findViewById(R.id.delete_pomodorosession_scrollview);
+
+        ImageButton back_from_delete_pomodorosession_button = findViewById(R.id.back_from_delete_pomodorosession_button);
+        Button delete_pomodorosession_button = findViewById(R.id.delete_pomodorosession_button);
+
+        delete_pomodoro_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.main_pomodorosessions_scrollview).setVisibility(View.INVISIBLE);
+                delete_pomodorosession_scrollview.setVisibility(View.VISIBLE);
+            }
+        });
+
+        back_from_delete_pomodorosession_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete_pomodorosession_scrollview.setVisibility(View.INVISIBLE);
+                findViewById(R.id.main_pomodorosessions_scrollview).setVisibility(View.VISIBLE);
+            }
+        });
+
+        delete_pomodorosession_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView delete_pomodoro_error = findViewById(R.id.delete_pomodoro_error);
+                delete_pomodoro_error.setVisibility(View.INVISIBLE);
+
+                String typed_id_str = session_delete_id_field.getText().toString().trim();
+
+                if (typed_id_str.isEmpty()) {
+                    delete_pomodoro_error.setText("Digite o ID da sessão");
+                    delete_pomodoro_error.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                int typed_id;
+                try {
+                    typed_id = Integer.parseInt(typed_id_str);
+                } catch (NumberFormatException e) {
+                    delete_pomodoro_error.setText("ID inválido");
+                    delete_pomodoro_error.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                SharedPreferences preferences = getSharedPreferences("BasicUserData", MODE_PRIVATE);
+                String pomodoro_sessions = preferences.getString("pomodorosessions", "[]");
+
+                try {
+                    JSONArray sessions_json = new JSONArray(pomodoro_sessions);
+                    boolean id_exists = false;
+
+                    for (int i = 0; i < sessions_json.length(); i++) {
+                        if (sessions_json.getJSONObject(i).getInt("id") == typed_id) {
+                            id_exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!id_exists) {
+                        delete_pomodoro_error.setText("Nenhuma sessão encontrada com esse ID");
+                        delete_pomodoro_error.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    String sessionsBefore = preferences.getString("pomodorosessions", "[]");
+
+                    DeleteObjects deleteObjects = new DeleteObjects(PomodoroSessionActivity.this);
+                    deleteObjects.deletePomodoroSession(String.valueOf(typed_id));
+
+                    String sessionsAfter = preferences.getString("pomodorosessions", "[]");
+                    if (sessionsBefore.equals(sessionsAfter)) {
+                        delete_pomodoro_error.setText("Não foi possível apagar a sessão");
+                        delete_pomodoro_error.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    session_delete_id_field.setText("");
+                    delete_pomodorosession_scrollview.setVisibility(View.INVISIBLE);
+                    findViewById(R.id.main_pomodorosessions_scrollview).setVisibility(View.VISIBLE);
+                    recreate();
+
+                } catch (JSONException e) {
+                    delete_pomodoro_error.setText("Erro ao verificar sessões");
+                    delete_pomodoro_error.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }

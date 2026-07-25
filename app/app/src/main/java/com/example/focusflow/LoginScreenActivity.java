@@ -70,7 +70,7 @@ public class LoginScreenActivity extends AppCompatActivity {
                             editor.putString("current_session", "{}");
                             editor.apply();
                         }
-                    }, 500);
+                    }, 200);
                 }
                 else{
                     findViewById(R.id.log_unseccessful).setVisibility(View.VISIBLE);

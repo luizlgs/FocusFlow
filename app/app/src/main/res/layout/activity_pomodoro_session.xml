@@ -148,6 +148,9 @@
                 android:text="Criar" />
 
         </LinearLayout>
+
+
+
     </ScrollView>
 
     <ScrollView
@@ -198,6 +201,99 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.018" />
+
+    <ScrollView
+        android:id="@+id/delete_pomodorosession_scrollview"
+        android:layout_width="330dp"
+        android:layout_height="210dp"
+        android:background="@drawable/caixa_bordas_redondas"
+        android:fillViewport="true"
+        android:visibility="invisible"
+        tools:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.349">
+
+        <LinearLayout
+            android:id="@+id/delete_pomodorosession_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/back_from_delete_pomodorosession_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:src="@drawable/botao_de_voltar" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:text="Qual sesão deseja deletar?"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/delete_pomodoro_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:text="ID inválido"
+                android:textColor="#DC143C"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="invisible"/>
+
+            <EditText
+                android:id="@+id/session_delete_id_field"
+                style="@style/editTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="ID da sessão que deseja apagar"
+                android:textSize="14sp"
+                android:singleLine="true" />
+
+            <Button
+                android:id="@+id/delete_pomodorosession_button"
+                style="@style/buttonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:text="Deletar" />
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+
+    <ImageButton
+        android:id="@+id/delete_pomodoro_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:adjustViewBounds="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitCenter"
+        android:src="@drawable/delete_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.957"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.977" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

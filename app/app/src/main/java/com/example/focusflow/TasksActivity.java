@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.focusflow.api.CreateObjects;
+import com.example.focusflow.api.DeleteObjects;
 
 import org.json.JSONArray;
 
@@ -168,5 +170,96 @@ public class TasksActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        ImageButton delete_task_icon_button = findViewById(R.id.delete_task_icon_button);
+        ScrollView delete_task_scrollview = findViewById(R.id.delete_task_scrollview);
+        EditText task_delete_id_field = findViewById(R.id.task_delete_id_field);
+        Button delete_task_button = findViewById(R.id.delete_task_button);
+        TextView delete_task_error = findViewById(R.id.delete_task_error);
+
+        delete_task_icon_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.main_task_scrollview).setVisibility(View.INVISIBLE);
+                delete_task_scrollview.setVisibility(View.VISIBLE);
+            }
+        });
+
+        ImageButton back_from_delete_task_button = findViewById(R.id.back_from_delete_task_button);
+        back_from_delete_task_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete_task_scrollview.setVisibility(View.INVISIBLE);
+                findViewById(R.id.main_task_scrollview).setVisibility(View.VISIBLE);
+            }
+        });
+
+        delete_task_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete_task_error.setVisibility(View.INVISIBLE);
+
+                String typed_id_str = task_delete_id_field.getText().toString().trim();
+
+                if (typed_id_str.isEmpty()) {
+                    delete_task_error.setText("Digite o ID da tarefa");
+                    delete_task_error.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                int typed_id;
+                try {
+                    typed_id = Integer.parseInt(typed_id_str);
+                } catch (NumberFormatException e) {
+                    delete_task_error.setText("ID inválido");
+                    delete_task_error.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                SharedPreferences preferences = getSharedPreferences("BasicUserData", MODE_PRIVATE);
+                String tasks = preferences.getString("tasks", "[]");
+
+                try {
+                    JSONArray tasks_json = new JSONArray(tasks);
+                    boolean id_exists = false;
+
+                    for (int i = 0; i < tasks_json.length(); i++) {
+                        if (tasks_json.getJSONObject(i).getInt("id") == typed_id) {
+                            id_exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!id_exists) {
+                        delete_task_error.setText("Nenhuma tarefa encontrada com esse ID");
+                        delete_task_error.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    String tasksBefore = preferences.getString("tasks", "[]");
+
+                    DeleteObjects deleteObjects = new DeleteObjects(TasksActivity.this);
+                    deleteObjects.deleteTask(String.valueOf(typed_id));
+
+                    String tasksAfter = preferences.getString("tasks", "[]");
+                    if (tasksBefore.equals(tasksAfter)) {
+                        delete_task_error.setText("Não foi possível apagar a tarefa");
+                        delete_task_error.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    task_delete_id_field.setText("");
+                    delete_task_scrollview.setVisibility(View.INVISIBLE);
+                    findViewById(R.id.main_task_scrollview).setVisibility(View.VISIBLE);
+                    recreate();
+
+                } catch (org.json.JSONException e) {
+                    delete_task_error.setText("Erro ao verificar tarefas");
+                    delete_task_error.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
     }
 }

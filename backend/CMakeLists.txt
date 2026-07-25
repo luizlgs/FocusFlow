@@ -10,10 +10,16 @@ add_subdirectory(Crow)
 
 find_package(nlohmann_json REQUIRED)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SODIUM REQUIRED libsodium)
+
 
 # 2. Cria o executável compilando os DOIS arquivos juntos
 # (Se o seu RequestsDB.cpp estiver em outra pasta, ajuste o caminho aqui)
 add_executable(main src/main.cpp src/RequestsDB.cpp)
 
 # 3. "Linka" a biblioteca do Crow E as bibliotecas do PostgreSQL (pqxx e pq)
-target_link_libraries(main PUBLIC Crow::Crow pqxx pq nlohmann_json::nlohmann_json)
+target_include_directories(main PUBLIC ${SODIUM_INCLUDE_DIRS})
+target_link_libraries(main PUBLIC Crow::Crow pqxx pq nlohmann_json::nlohmann_json ${SODIUM_LIBRARIES})
+
+

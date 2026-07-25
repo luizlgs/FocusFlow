@@ -1,54 +1,42 @@
---tabelas do sistema
+--tabelas do sistema (versão atualizada)
 
 create table Users (
 	id int generated always as identity primary key,
-    name_ varchar(100) not null,
-    age int not null,
-    email varchar(100) not null,
-    password varchar(20) not null
+	name varchar(100) not null,
+	age int not null,
+	email varchar(100) not null,
+	password varchar(255) not null
 );
 
 create table Projects (
 	id int generated always as identity primary key,
 	title varchar(100) not null,
-	description varchar(100),
+	description varchar(1000),
 	start_date date not null,
 	delivery_date date not null,
 	members integer[],
-	
+	project_state boolean not null default false,
+	completion_date date,
+
 	user_id int not null,
 	foreign key (user_id) references Users(id)
-); 
-
-
-create table Cards (
-	id int generated always as identity primary key,
-	title varchar(100) not null,
-	description varchar(100),
-	members integer[] not null,
-	start_date date not null,
-	delivery_date date not null,
-	comments_ varchar(1000),
-
-	project_id int not null,
-	foreign key (project_id) references Projects(id)
-	
 );
 
 create table Tasks (
 	id int generated always as identity primary key,
 	title varchar(100) not null,
-	descripton varchar(100),
-	date_ date not null,
-	
-	user_id int null,
-	foreign key (user_id) references Users(id),
+	description varchar(1000),
+	task_date date not null,
+	priority varchar(10) not null,
+	task_state boolean not null default false,
+	completion_date date,
+	completion_time time,
 
-	card_id int null,
-	foreign key (card_id) references Cards(id)	
+	user_id int not null,
+	foreign key (user_id) references Users(id)
 );
 
-create table PomodoroSessions(
+create table PomodoroSessions (
 	id int generated always as identity primary key,
 	title varchar(100) not null,
 	description varchar(1000),
@@ -56,8 +44,14 @@ create table PomodoroSessions(
 	big_pause time not null,
 	blocks time not null,
 	start_time time not null,
-	end_time time not null,
-	
-	user_id int,
+	end_time time,
+	date date,
+	total_focus time default '00:00:00',
+	timer time default '00:00:00',
+	small_pauses int default 0,
+	big_pauses int default 0,
+	is_pause boolean not null default false,
+
+	user_id int not null,
 	foreign key (user_id) references Users(id)
 );

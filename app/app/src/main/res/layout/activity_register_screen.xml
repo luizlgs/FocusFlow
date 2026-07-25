@@ -40,17 +40,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.053" />
 
-    <TextView
-        android:id="@+id/account_created"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="152dp"
-        android:text="Conta criada com sucesso!"
-        android:textColor="#32CD32"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="378dp"
@@ -75,6 +64,18 @@
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/account_created"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Conta criada com sucesso!"
+            android:textColor="#32CD32"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/register_name_field"
