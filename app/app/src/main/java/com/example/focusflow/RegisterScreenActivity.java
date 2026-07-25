@@ -21,7 +21,7 @@ import com.example.focusflow.api.Acess;
 public class RegisterScreenActivity extends AppCompatActivity {
     private ImageButton back_button;
     private Button register_button;
-    TextView account_created;
+    private TextView account_created;
 
 
     @Override

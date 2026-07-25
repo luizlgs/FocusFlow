@@ -30,11 +30,19 @@ import com.example.focusflow.api.ChangeObjectsStates;
 
 public class ProjectInfoActivity extends AppCompatActivity {
     private Button members;
-    int appearNumber = 0;
+    private int appearNumber = 0;
     private ImageButton back_from_members_button;
     private ImageButton conclude_project;
     private ImageButton back_to_projects;
-    boolean concluded;
+    private boolean concluded;
+    private TextView projetct_title;
+    private TextView project_id;
+    private TextView project_creator;
+    private TextView projetct_description;
+    private TextView projetct_start_date;
+    private TextView projetct_delivery_date;
+    private TextView projetct_state;
+    private TextView project_completion_date;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -60,43 +68,43 @@ public class ProjectInfoActivity extends AppCompatActivity {
             JSONObject project_json = new JSONObject(user_project);
 
             //Instancia as informacoes do projeto na tela com uma cor diferente do tipo do atributo
-            TextView projetct_title = findViewById(R.id.project_title_text);
+            projetct_title = findViewById(R.id.project_title_text);
             projetct_title.setText(project_json.getString("title"));
 
-            TextView project_id = findViewById(R.id.project_id_text);
+            project_id = findViewById(R.id.project_id_text);
             String projectId = project_json.getString("id");
             SpannableString textoProjectId = new SpannableString(projectId);
             textoProjectId.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoProjectId.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             project_id.append(textoProjectId);
 
-            TextView project_creator = findViewById(R.id.project_creator_text);
+            project_creator = findViewById(R.id.project_creator_text);
             String creatorName = project_json.getString("creator_name");
             SpannableString textoCreatorName = new SpannableString(creatorName);
             textoCreatorName.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoCreatorName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             project_creator.append(textoCreatorName);
 
-            TextView projetct_description = findViewById(R.id.project_description_text);
+            projetct_description = findViewById(R.id.project_description_text);
             String description = project_json.getString("description");
             SpannableString textoDescription = new SpannableString(description);
             textoDescription.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoDescription.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             projetct_description.append(textoDescription);
 
-            TextView projetct_start_date = findViewById(R.id.project_start_date);
+            projetct_start_date = findViewById(R.id.project_start_date);
             String startDate = project_json.getString("start_date");
             SpannableString textoStartDate = new SpannableString(startDate);
             textoStartDate.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoStartDate.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             projetct_start_date.append(textoStartDate);
 
-            TextView projetct_delivery_date= findViewById(R.id.project_delivery_date);
+            projetct_delivery_date = findViewById(R.id.project_delivery_date);
             String deliveryDate = project_json.getString("delivery_date");
             SpannableString textoDeliveryDate = new SpannableString(deliveryDate);
             textoDeliveryDate.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoDeliveryDate.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             projetct_delivery_date.append(textoDeliveryDate);
 
-            TextView projetct_state= findViewById(R.id.project_state);
+            projetct_state = findViewById(R.id.project_state);
             String projectState = project_json.getString("project_state");
 
-            TextView project_completion_date = findViewById(R.id.project_completion_date);
+            project_completion_date = findViewById(R.id.project_completion_date);
 
             if(project_json.getString("project_state").equals("t")) {
                 String completionDate = project_json.getString("completion_date");
@@ -184,13 +192,12 @@ public class ProjectInfoActivity extends AppCompatActivity {
             Log.e("Erro", "nao foi possivel acessar o json de projetos");
         }
 
-        conclude_project =  findViewById(R.id.conclude_project);
+        conclude_project = findViewById(R.id.conclude_project);
         if(concluded)
             conclude_project.setImageResource(R.drawable.botao_nconcluir);
         else
             conclude_project.setImageResource(R.drawable.botao_concluir);
-
-        conclude_project = findViewById(R.id.conclude_project);
+        
         conclude_project.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

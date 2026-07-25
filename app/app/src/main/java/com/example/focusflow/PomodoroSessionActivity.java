@@ -32,9 +32,17 @@ public class PomodoroSessionActivity extends AppCompatActivity {
     private ImageButton back_from_new_pomodorosession_button;
     private ImageButton back_to_initial;
     private ImageButton delete_pomodoro_button;
+    private ImageButton back_from_delete_pomodorosession_button;
     private Button create_pomodorosession_button;
-    EditText session_delete_id_field;
-    ScrollView delete_pomodorosession_scrollview;
+    private Button delete_pomodorosession_button;
+    private EditText session_delete_id_field;
+    private EditText session_title_field;
+    private EditText session_description_field;
+    private EditText session_blocks_field;
+    private EditText session_short_pause_field;
+    private EditText session_big_pause_field;
+    private ScrollView delete_pomodorosession_scrollview;
+    private TextView delete_pomodoro_error;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -148,11 +156,11 @@ public class PomodoroSessionActivity extends AppCompatActivity {
         create_pomodorosession_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText session_title_field = findViewById(R.id.session_title_field);
-                EditText session_description_field = findViewById(R.id.session_description_field);
-                EditText session_blocks_field = findViewById(R.id.session_blocks_field);
-                EditText session_short_pause_field = findViewById(R.id.session_short_pause_field);
-                EditText session_big_pause_field = findViewById(R.id.session_big_pause_field);
+                session_title_field = findViewById(R.id.session_title_field);
+                session_description_field = findViewById(R.id.session_description_field);
+                session_blocks_field = findViewById(R.id.session_blocks_field);
+                session_short_pause_field = findViewById(R.id.session_short_pause_field);
+                session_big_pause_field = findViewById(R.id.session_big_pause_field);
 
                 SharedPreferences preferences = getSharedPreferences("BasicUserData", MODE_PRIVATE);
                 int userId = preferences.getInt("user_id", -1);
@@ -217,8 +225,8 @@ public class PomodoroSessionActivity extends AppCompatActivity {
         session_delete_id_field = findViewById(R.id.session_delete_id_field);
         delete_pomodorosession_scrollview = findViewById(R.id.delete_pomodorosession_scrollview);
 
-        ImageButton back_from_delete_pomodorosession_button = findViewById(R.id.back_from_delete_pomodorosession_button);
-        Button delete_pomodorosession_button = findViewById(R.id.delete_pomodorosession_button);
+        back_from_delete_pomodorosession_button = findViewById(R.id.back_from_delete_pomodorosession_button);
+        delete_pomodorosession_button = findViewById(R.id.delete_pomodorosession_button);
 
         delete_pomodoro_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,7 +247,7 @@ public class PomodoroSessionActivity extends AppCompatActivity {
         delete_pomodorosession_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView delete_pomodoro_error = findViewById(R.id.delete_pomodoro_error);
+                delete_pomodoro_error = findViewById(R.id.delete_pomodoro_error);
                 delete_pomodoro_error.setVisibility(View.INVISIBLE);
 
                 String typed_id_str = session_delete_id_field.getText().toString().trim();

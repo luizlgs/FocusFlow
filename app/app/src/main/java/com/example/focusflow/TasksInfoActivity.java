@@ -24,8 +24,17 @@ import com.example.focusflow.api.ChangeObjectsStates;
 
 public class TasksInfoActivity extends AppCompatActivity {
     private ImageButton conclude_task;
-    ImageButton back_to_tasks;
+    private ImageButton back_to_tasks;
+
     boolean concluded;
+
+    private TextView task_title;
+    private TextView task_description;
+    private TextView task_date;
+    private TextView task_state;
+    private TextView task_completion_date;
+    private TextView task_completion_time;
+    private TextView task_priority;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -50,26 +59,26 @@ public class TasksInfoActivity extends AppCompatActivity {
 
             JSONObject user_task_json = new JSONObject(user_task);
 
-            TextView task_title = findViewById(R.id.task_title);
+            task_title = findViewById(R.id.task_title);
             task_title.setText(user_task_json.getString("title"));
 
-            TextView task_description = findViewById(R.id.task_description);
+            task_description = findViewById(R.id.task_description);
             String description = user_task_json.getString("description");
             SpannableString textoDescription = new SpannableString(description);
             textoDescription.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoDescription.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             task_description.append(textoDescription);
 
-            TextView task_date = findViewById(R.id.task_date);
+            task_date = findViewById(R.id.task_date);
             String taskDate = user_task_json.getString("task_date");
             SpannableString textoTaskDate = new SpannableString(taskDate);
             textoTaskDate.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoTaskDate.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             task_date.append(textoTaskDate);
 
-            TextView task_state = findViewById(R.id.task_state);
+            task_state = findViewById(R.id.task_state);
             String taskState = user_task_json.getString("task_state");
 
-            TextView task_completion_date = findViewById(R.id.task_completion_date);
-            TextView task_completion_time = findViewById(R.id.task_completion_time);
+            task_completion_date = findViewById(R.id.task_completion_date);
+            task_completion_time = findViewById(R.id.task_completion_time);
 
             if(user_task_json.getString("task_state").equals("t")) {
 
@@ -115,7 +124,7 @@ public class TasksInfoActivity extends AppCompatActivity {
             textoTaskState.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoTaskState.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             task_state.append(textoTaskState);
 
-            TextView task_priority = findViewById(R.id.task_priority);
+            task_priority = findViewById(R.id.task_priority);
             String priority = user_task_json.getString("priority");
             SpannableString textoPriority = new SpannableString(priority);
             textoPriority.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoPriority.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

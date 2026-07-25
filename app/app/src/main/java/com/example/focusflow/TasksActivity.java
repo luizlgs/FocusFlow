@@ -27,9 +27,27 @@ import org.json.JSONArray;
 public class TasksActivity extends AppCompatActivity {
     private ImageButton new_task_button;
     private ImageButton back_from_new_task_button;
-    private Button create_task_button;
     private ImageButton back_to_initial;
+
+    private ImageButton delete_task_icon_button;
+    private ImageButton back_from_delete_task_button;
+
+    private Button create_task_button;
+    private Button delete_task_button;
+
     private boolean recreate_ = true;
+
+    private LinearLayout taskslayout;
+
+    private EditText task_title_field;
+    private EditText task_description_field;
+    private EditText task_date_field;
+    private EditText task_priority_field;
+    private EditText task_delete_id_field;
+
+    private ScrollView delete_task_scrollview;
+    private TextView delete_task_error;
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -63,7 +81,7 @@ public class TasksActivity extends AppCompatActivity {
             String user_tasks = preferences.getString("tasks", "TasksNotFound");
             JSONArray tasks_json = new JSONArray(user_tasks);
 
-            LinearLayout taskslayout = findViewById(R.id.taskslayout);
+            taskslayout = findViewById(R.id.taskslayout);
 
             for(int i=0; i<tasks_json.length(); i++) {
                 final int index = i;
@@ -124,10 +142,10 @@ public class TasksActivity extends AppCompatActivity {
         create_task_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText task_title_field = findViewById(R.id.task_title_field);
-                EditText task_description_field = findViewById(R.id.task_description_field);
-                EditText task_date_field = findViewById(R.id.task_date_field);
-                EditText task_priority_field = findViewById(R.id.task_priority_field);
+                task_title_field = findViewById(R.id.task_title_field);
+                task_description_field = findViewById(R.id.task_description_field);
+                task_date_field = findViewById(R.id.task_date_field);
+                task_priority_field = findViewById(R.id.task_priority_field);
 
                 SharedPreferences preferences = getSharedPreferences("BasicUserData", MODE_PRIVATE);
                 int userId = preferences.getInt("user_id", -1);
@@ -172,11 +190,11 @@ public class TasksActivity extends AppCompatActivity {
         });
 
 
-        ImageButton delete_task_icon_button = findViewById(R.id.delete_task_icon_button);
-        ScrollView delete_task_scrollview = findViewById(R.id.delete_task_scrollview);
-        EditText task_delete_id_field = findViewById(R.id.task_delete_id_field);
-        Button delete_task_button = findViewById(R.id.delete_task_button);
-        TextView delete_task_error = findViewById(R.id.delete_task_error);
+        delete_task_icon_button = findViewById(R.id.delete_task_icon_button);
+        delete_task_scrollview = findViewById(R.id.delete_task_scrollview);
+        task_delete_id_field = findViewById(R.id.task_delete_id_field);
+        delete_task_button = findViewById(R.id.delete_task_button);
+        delete_task_error = findViewById(R.id.delete_task_error);
 
         delete_task_icon_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +204,7 @@ public class TasksActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton back_from_delete_task_button = findViewById(R.id.back_from_delete_task_button);
+        back_from_delete_task_button = findViewById(R.id.back_from_delete_task_button);
         back_from_delete_task_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

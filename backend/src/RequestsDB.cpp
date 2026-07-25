@@ -1,6 +1,5 @@
 #include "../include/RequestsDB.hpp"
 
-
 std::optional<pqxx::row> RequestsDB::login(std::string email, std::string pass) {
     //CROW_LOG_INFO << email << " " << pass;
     try {
@@ -531,19 +530,19 @@ bool RequestsDB::verify_password(const std::string& password, const std::string&
     return crypto_pwhash_str_verify(stored_hash.c_str(), password.c_str(), password.size()) == 0;
 }
 
-nlohmann::json RequestsDB::delete_pomodoro_session(std::string session_id) {
-    if(has_a_empty_field({session_id})) return nullptr;
+nlohmann::json RequestsDB::delete_project(std::string project_id) {
+    if(has_a_empty_field({project_id})) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
 
         pqxx::result rows = connection_.exec_params(
-            "DELETE FROM PomodoroSessions WHERE id = $1 RETURNING id;",
-            session_id
+            "DELETE FROM Projects WHERE id = $1 RETURNING id;",
+            project_id
         );
 
         if (rows.empty()) {
-            throw std::runtime_error("Sessão pomodoro não encontrada.");
+            throw std::runtime_error("Projeto não encontrado.");
         }
 
         connection_.commit();
@@ -587,19 +586,19 @@ nlohmann::json RequestsDB::delete_task(std::string task_id) {
     }
 }
 
-nlohmann::json RequestsDB::delete_project(std::string project_id) {
-    if(has_a_empty_field({project_id})) return nullptr;
+nlohmann::json RequestsDB::delete_pomodoro_session(std::string session_id) {
+    if(has_a_empty_field({session_id})) return nullptr;
     try {
         pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
         pqxx::work connection_(db);
 
         pqxx::result rows = connection_.exec_params(
-            "DELETE FROM Projects WHERE id = $1 RETURNING id;",
-            project_id
+            "DELETE FROM PomodoroSessions WHERE id = $1 RETURNING id;",
+            session_id
         );
 
         if (rows.empty()) {
-            throw std::runtime_error("Projeto não encontrado.");
+            throw std::runtime_error("Sessão pomodoro não encontrada.");
         }
 
         connection_.commit();
@@ -614,6 +613,7 @@ nlohmann::json RequestsDB::delete_project(std::string project_id) {
         return nullptr;
     }
 }
+
 
 std::string RequestsDB::getMembersIds(std::string membersEmails, pqxx::work& connection_, std::string creator_id) {
     std::stringstream ss(membersEmails);

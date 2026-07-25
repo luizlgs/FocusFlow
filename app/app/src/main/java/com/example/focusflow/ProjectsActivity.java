@@ -30,6 +30,16 @@ public class ProjectsActivity extends AppCompatActivity {
     private ImageButton back_from_new_project_button;
     private ImageButton back_to_initial;
     private boolean recreate_ = true;
+    private LinearLayout projectLayout;
+    private EditText project_title_field;
+    private EditText project_description_field;
+    private EditText project_delivery_date_field;
+    private EditText project_members_field;
+    private ImageButton delete_project_icon_button;
+    private ScrollView delete_project_scrollview;
+    private EditText project_delete_id_field;
+    private Button delete_project_button;
+    private TextView delete_project_error;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -62,7 +72,7 @@ public class ProjectsActivity extends AppCompatActivity {
             String user_projects = preferences.getString("projects", "ProjectsNotFound");
             JSONArray projects_json = new JSONArray(user_projects);
 
-            LinearLayout projectLayout = findViewById(R.id.projectlayout);
+            projectLayout = findViewById(R.id.projectlayout);
 
             for(int i=0; i<projects_json.length(); i++){
                 final int index = i;
@@ -106,10 +116,10 @@ public class ProjectsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                EditText project_title_field = findViewById(R.id.project_title_field);
-                EditText project_description_field = findViewById(R.id.project_description_field);
-                EditText project_delivery_date_field = findViewById(R.id.project_delivery_date_field);
-                EditText project_members_field = findViewById(R.id.project_members_field);
+                project_title_field = findViewById(R.id.project_title_field);
+                project_description_field = findViewById(R.id.project_description_field);
+                project_delivery_date_field = findViewById(R.id.project_delivery_date_field);
+                project_members_field = findViewById(R.id.project_members_field);
 
                 SharedPreferences preferences = getSharedPreferences("BasicUserData", MODE_PRIVATE);
                 String ProjectsBefore = preferences.getString("projects", "[]");
@@ -172,11 +182,11 @@ public class ProjectsActivity extends AppCompatActivity {
         });
 
 
-        ImageButton delete_project_icon_button = findViewById(R.id.delete_project_icon_button);
-        ScrollView delete_project_scrollview = findViewById(R.id.delete_project_scrollview);
-        EditText project_delete_id_field = findViewById(R.id.project_delete_id_field);
-        Button delete_project_button = findViewById(R.id.delete_project_button);
-        TextView delete_project_error = findViewById(R.id.delete_project_error);
+        delete_project_icon_button = findViewById(R.id.delete_project_icon_button);
+        delete_project_scrollview = findViewById(R.id.delete_project_scrollview);
+        project_delete_id_field = findViewById(R.id.project_delete_id_field);
+        delete_project_button = findViewById(R.id.delete_project_button);
+        delete_project_error = findViewById(R.id.delete_project_error);
 
         delete_project_icon_button.setOnClickListener(new View.OnClickListener() {
             @Override

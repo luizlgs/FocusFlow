@@ -17,6 +17,11 @@ import androidx.core.view.WindowInsetsCompat;
 public class ProfileActivity extends AppCompatActivity {
     private Button logout_button;
     private ImageButton back_to_initial;
+    private TextView welcome_text;
+    private TextView id_text;
+    private TextView name_text;
+    private TextView email_text;
+    private TextView age_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,19 +42,19 @@ public class ProfileActivity extends AppCompatActivity {
         String user_email = preferences.getString("user_email", "EmailNotFound");
         int user_age = preferences.getInt("user_age", -1);
 
-        TextView welcome_text = findViewById(R.id.welcometext);
+        welcome_text = findViewById(R.id.welcometext);
         welcome_text.setText("Hello "+user_name.split(" ")[0]+"!");
 
-        TextView id_text = findViewById(R.id.user_id_text);
+        id_text = findViewById(R.id.user_id_text);
         id_text.setText("ID: "+user_id);
 
-        TextView name_text = findViewById(R.id.user_name_text);
+        name_text = findViewById(R.id.user_name_text);
         name_text.setText("Nome: "+user_name);
 
-        TextView email_text = findViewById(R.id.user_email_text);
+        email_text = findViewById(R.id.user_email_text);
         email_text.setText("Email: "+user_email);
 
-        TextView age_text = findViewById(R.id.user_age_text);
+        age_text = findViewById(R.id.user_age_text);
         age_text.setText("Idade: "+user_age);
 
         logout_button = findViewById(R.id.logoutbutton);

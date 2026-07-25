@@ -27,7 +27,8 @@ public class PomodoroSessionTimerActivity extends AppCompatActivity {
     private ImageButton back_to_sessions;
     private Button start_session_button;
     private Button stop_button;
-    TextView timer;
+    private TextView timer;
+    private TextView timer_session_title;
 
     private Thread t;
 
@@ -116,7 +117,7 @@ public class PomodoroSessionTimerActivity extends AppCompatActivity {
         try {
             session_json = new JSONObject(user_session);
 
-            TextView timer_session_title = findViewById(R.id.timer_session_title);
+            timer_session_title = findViewById(R.id.timer_session_title);
             timer_session_title.setText(session_json.getString("title"));
 
             String horas_string_blocks = session_json.getString("blocks").substring(0, 2);
@@ -176,8 +177,7 @@ public class PomodoroSessionTimerActivity extends AppCompatActivity {
                     if (start_session_button.getText().toString().equals("Iniciar sessão")) {
                         timerHandler = new Handler(); //controlador/agendador do runnable
                         start_session_button.setText("Encerrar sessão");
-                        Button meuBotao = findViewById(R.id.start_session_button);
-                        meuBotao.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#99CC0000")));
+                        start_session_button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#99CC0000")));
 
                         phase_start_elapsed = android.os.SystemClock.elapsedRealtime();
                         phase_duration_seconds = timeToSeconds(timer.getText().toString()); //tempo do bloco de foco

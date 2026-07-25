@@ -22,6 +22,16 @@ import org.json.JSONObject;
 
 public class PomodoroSessionInfoActivity extends AppCompatActivity {
     private ImageButton back_to_sessions;
+    private TextView session_title;
+    private TextView session_id;
+    private TextView session_description;
+    private TextView session_blocks;
+    private TextView session_short_pause;
+    private TextView session_big_pause;
+    private TextView session_start_time;
+    private TextView session_end_time;
+    private TextView total_focus;
+    private TextView session_date;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -46,43 +56,43 @@ public class PomodoroSessionInfoActivity extends AppCompatActivity {
         try {
             JSONObject session_json = new JSONObject(user_session);
 
-            TextView session_title = findViewById(R.id.session_title_text);
+            session_title = findViewById(R.id.session_title_text);
             session_title.setText(session_json.getString("title"));
 
-            TextView session_id = findViewById(R.id.session_id_text);
+            session_id = findViewById(R.id.session_id_text);
             String sessionId = session_json.getString("id");
             SpannableString textoSessionId = new SpannableString(sessionId);
             textoSessionId.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoSessionId.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             session_id.append(textoSessionId);
 
-            TextView session_description = findViewById(R.id.session_description_text);
+            session_description = findViewById(R.id.session_description_text);
             String sessionDescription = session_json.getString("description");
             SpannableString textoSessionDescription = new SpannableString(sessionDescription);
             textoSessionDescription.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoSessionDescription.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             session_description.append(textoSessionDescription);
 
-            TextView session_blocks = findViewById(R.id.session_blocks_text);
+            session_blocks = findViewById(R.id.session_blocks_text);
             String sessionBlocks = session_json.getString("blocks");
             String sessionBlocksFull = sessionBlocks;
             SpannableString textoSessionBlocks = new SpannableString(sessionBlocks);
             textoSessionBlocks.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoSessionBlocks.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             session_blocks.append(textoSessionBlocks);
 
-            TextView session_short_pause = findViewById(R.id.session_short_pause_text);
+            session_short_pause = findViewById(R.id.session_short_pause_text);
             String sessionShortPause = session_json.getString("short_pause");
             String sessionShortPauseFull = sessionShortPause;
             SpannableString textoSessionShortPause = new SpannableString(sessionShortPause);
             textoSessionShortPause.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoSessionShortPause.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             session_short_pause.append(textoSessionShortPause);
 
-            TextView session_big_pause = findViewById(R.id.session_big_pause_text);
+            session_big_pause = findViewById(R.id.session_big_pause_text);
             String sessionBigPause = session_json.getString("big_pause");
             String sessionBigPauseFull = sessionBigPause;
             SpannableString textoSessionBigPause = new SpannableString(sessionBigPause);
             textoSessionBigPause.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoSessionBigPause.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             session_big_pause.append(textoSessionBigPause);
 
-            TextView session_start_time = findViewById(R.id.session_start_time_text);
+            session_start_time = findViewById(R.id.session_start_time_text);
             String sessionStartTime = session_json.getString("start_time");
             String sessionStartTimeFull = sessionStartTime;
             sessionStartTime = sessionStartTime.substring(0, sessionStartTime.lastIndexOf(":"));
@@ -90,7 +100,7 @@ public class PomodoroSessionInfoActivity extends AppCompatActivity {
             textoSessionStartTime.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoSessionStartTime.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             session_start_time.append(textoSessionStartTime);
 
-            TextView session_end_time = findViewById(R.id.session_end_time_text);
+            session_end_time = findViewById(R.id.session_end_time_text);
             String sessionEndTime = session_json.getString("end_time");
             String sessionEndTimeFull = sessionEndTime;
             sessionEndTime = sessionEndTime.substring(0, sessionEndTime.lastIndexOf(":"));
@@ -98,13 +108,13 @@ public class PomodoroSessionInfoActivity extends AppCompatActivity {
             textoSessionEndTime.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoSessionEndTime.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             session_end_time.append(textoSessionEndTime);
 
-            TextView total_focus = findViewById(R.id.total_focus);
+            total_focus = findViewById(R.id.total_focus);
             String focus = session_json.getString("total_focus");
             SpannableString textoTotalFocus = new SpannableString(focus);
             textoTotalFocus.setSpan(new ForegroundColorSpan(Color.parseColor("#80000000")), 0, textoTotalFocus.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             total_focus.append(textoTotalFocus);
 
-            TextView session_date = findViewById(R.id.session_date_text);
+            session_date = findViewById(R.id.session_date_text);
             String sessionDate = session_json.getString("date");
             System.out.println(sessionDate);
             if(!sessionDate.equals("")) {

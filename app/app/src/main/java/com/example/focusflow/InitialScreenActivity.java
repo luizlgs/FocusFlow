@@ -98,9 +98,6 @@ public class InitialScreenActivity extends AppCompatActivity {
             return insets;
         });
 
-        //createProjectsChart(); //criação do grafico dos projetos
-        //createTasksChart(); //criação do grafico das tarefas
-
         // carrega as informacoes basicas do usuario salvos no login
         SharedPreferences preferences = getSharedPreferences("BasicUserData", InitialScreenActivity.this.MODE_PRIVATE);
 
