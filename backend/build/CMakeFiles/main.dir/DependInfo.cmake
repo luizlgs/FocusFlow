@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/gustavo/Documentos/Step2Pomodoro/src/RequestsDB.cpp" "CMakeFiles/main.dir/src/RequestsDB.cpp.o" "gcc" "CMakeFiles/main.dir/src/RequestsDB.cpp.o.d"
-  "/home/gustavo/Documentos/Step2Pomodoro/src/main.cpp" "CMakeFiles/main.dir/src/main.cpp.o" "gcc" "CMakeFiles/main.dir/src/main.cpp.o.d"
+  "/home/gustavo/Documentos/FocusFlow/backend/src/RequestsDB.cpp" "CMakeFiles/main.dir/src/RequestsDB.cpp.o" "gcc" "CMakeFiles/main.dir/src/RequestsDB.cpp.o.d"
+  "/home/gustavo/Documentos/FocusFlow/backend/src/main.cpp" "CMakeFiles/main.dir/src/main.cpp.o" "gcc" "CMakeFiles/main.dir/src/main.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

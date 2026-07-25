@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gustavo/Documentos/Step2Pomodoro
+CMAKE_SOURCE_DIR = /home/gustavo/Documentos/FocusFlow/backend
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gustavo/Documentos/Step2Pomodoro/build
+CMAKE_BINARY_DIR = /home/gustavo/Documentos/FocusFlow/backend/build
 
 # Utility rule file for uninstall.
 
@@ -67,7 +67,7 @@ include Crow/CMakeFiles/uninstall.dir/compiler_depend.make
 include Crow/CMakeFiles/uninstall.dir/progress.make
 
 Crow/CMakeFiles/uninstall:
-	cd /home/gustavo/Documentos/Step2Pomodoro/build/Crow && /usr/bin/cmake -P /home/gustavo/Documentos/Step2Pomodoro/build/Crow/cmake_uninstall.cmake
+	cd /home/gustavo/Documentos/FocusFlow/backend/build/Crow && /usr/bin/cmake -P /home/gustavo/Documentos/FocusFlow/backend/build/Crow/cmake_uninstall.cmake
 
 uninstall: Crow/CMakeFiles/uninstall
 uninstall: Crow/CMakeFiles/uninstall.dir/build.make
@@ -78,10 +78,10 @@ Crow/CMakeFiles/uninstall.dir/build: uninstall
 .PHONY : Crow/CMakeFiles/uninstall.dir/build
 
 Crow/CMakeFiles/uninstall.dir/clean:
-	cd /home/gustavo/Documentos/Step2Pomodoro/build/Crow && $(CMAKE_COMMAND) -P CMakeFiles/uninstall.dir/cmake_clean.cmake
+	cd /home/gustavo/Documentos/FocusFlow/backend/build/Crow && $(CMAKE_COMMAND) -P CMakeFiles/uninstall.dir/cmake_clean.cmake
 .PHONY : Crow/CMakeFiles/uninstall.dir/clean
 
 Crow/CMakeFiles/uninstall.dir/depend:
-	cd /home/gustavo/Documentos/Step2Pomodoro/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gustavo/Documentos/Step2Pomodoro /home/gustavo/Documentos/Step2Pomodoro/Crow /home/gustavo/Documentos/Step2Pomodoro/build /home/gustavo/Documentos/Step2Pomodoro/build/Crow /home/gustavo/Documentos/Step2Pomodoro/build/Crow/CMakeFiles/uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/gustavo/Documentos/FocusFlow/backend/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gustavo/Documentos/FocusFlow/backend /home/gustavo/Documentos/FocusFlow/backend/Crow /home/gustavo/Documentos/FocusFlow/backend/build /home/gustavo/Documentos/FocusFlow/backend/build/Crow /home/gustavo/Documentos/FocusFlow/backend/build/Crow/CMakeFiles/uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : Crow/CMakeFiles/uninstall.dir/depend
 

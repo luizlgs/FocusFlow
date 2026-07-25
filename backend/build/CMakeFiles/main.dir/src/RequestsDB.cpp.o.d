@@ -1,8 +1,8 @@
 CMakeFiles/main.dir/src/RequestsDB.cpp.o: \
- /home/gustavo/Documentos/Step2Pomodoro/src/RequestsDB.cpp \
+ /home/gustavo/Documentos/FocusFlow/backend/src/RequestsDB.cpp \
  /usr/include/stdc-predef.h \
- /home/gustavo/Documentos/Step2Pomodoro/src/../include/RequestsDB.hpp \
- /home/gustavo/Documentos/Step2Pomodoro/src/../include/../include/core.hpp \
+ /home/gustavo/Documentos/FocusFlow/backend/src/../include/RequestsDB.hpp \
+ /home/gustavo/Documentos/FocusFlow/backend/src/../include/../include/core.hpp \
  /usr/include/c++/13/iostream /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
@@ -159,8 +159,8 @@ CMakeFiles/main.dir/src/RequestsDB.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
  /usr/include/c++/13/limits /usr/include/c++/13/ctime \
  /usr/include/c++/13/bits/parse_numbers.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/query_string.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/query_string.h \
  /usr/include/string.h /usr/include/strings.h /usr/include/c++/13/vector \
  /usr/include/c++/13/bits/stl_uninitialized.h \
  /usr/include/c++/13/bits/stl_vector.h \
@@ -186,7 +186,7 @@ CMakeFiles/main.dir/src/RequestsDB.cpp.o: \
  /usr/include/c++/13/backward/auto_ptr.h \
  /usr/include/c++/13/pstl/glue_memory_defs.h \
  /usr/include/c++/13/pstl/execution_defs.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/http_parser_merged.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/http_parser_merged.h \
  /usr/include/assert.h /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
@@ -195,8 +195,8 @@ CMakeFiles/main.dir/src/RequestsDB.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/common.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/utility.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/common.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/utility.h \
  /usr/include/c++/13/cstring /usr/include/c++/13/functional \
  /usr/include/c++/13/bits/std_function.h /usr/include/c++/13/array \
  /usr/include/c++/13/compare /usr/include/c++/13/bits/stl_algo.h \
@@ -233,7 +233,7 @@ CMakeFiles/main.dir/src/RequestsDB.cpp.o: \
  /usr/include/c++/13/pstl/glue_numeric_defs.h \
  /usr/include/c++/13/algorithm \
  /usr/include/c++/13/pstl/glue_algorithm_defs.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/settings.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/settings.h \
  /usr/include/c++/13/filesystem /usr/include/c++/13/bits/fs_fwd.h \
  /usr/include/c++/13/bits/fs_path.h /usr/include/c++/13/locale \
  /usr/include/c++/13/bits/locale_facets_nonio.h \
@@ -244,9 +244,9 @@ CMakeFiles/main.dir/src/RequestsDB.cpp.o: \
  /usr/include/c++/13/bits/locale_conv.h /usr/include/c++/13/iomanip \
  /usr/include/c++/13/bits/quoted_string.h /usr/include/c++/13/codecvt \
  /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/ci_map.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/TinySHA1.hpp \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/socket_adaptors.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/ci_map.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/TinySHA1.hpp \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/socket_adaptors.h \
  /usr/include/asio.hpp /usr/include/asio/any_completion_executor.hpp \
  /usr/include/asio/detail/config.hpp /usr/include/c++/13/version \
  /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
@@ -836,42 +836,42 @@ CMakeFiles/main.dir/src/RequestsDB.cpp.o: \
  /usr/include/asio/writable_pipe.hpp /usr/include/asio/write.hpp \
  /usr/include/asio/write_at.hpp /usr/include/asio/impl/write_at.hpp \
  /usr/include/asio/version.hpp \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/socket_acceptors.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/logging.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/json.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/socket_acceptors.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/logging.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/json.h \
  /usr/include/c++/13/cfloat \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/float.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/returnable.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/mustache.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/returnable.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/mustache.h \
  /usr/include/c++/13/fstream \
  /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
  /usr/include/c++/13/bits/fstream.tcc \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/task_timer.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/task_timer.h \
  /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
  /usr/include/c++/13/bits/stl_map.h \
  /usr/include/c++/13/bits/stl_multimap.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/http_request.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/websocket.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/http_request.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/websocket.h \
  /usr/include/c++/13/optional /usr/include/c++/13/thread \
  /usr/include/c++/13/bits/this_thread_sleep.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/http_response.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/mime_types.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/TinySHA1.hpp \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/parser.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/multipart.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/exceptions.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/multipart_view.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/http_response.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/mime_types.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/TinySHA1.hpp \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/parser.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/multipart.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/exceptions.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/multipart_view.h \
  /usr/include/c++/13/charconv \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/routing.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/middleware.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/middleware_context.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/compression.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/http_connection.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/compression.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/http_server.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/version.h \
- /home/gustavo/Documentos/Step2Pomodoro/Crow/include/crow/app.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/routing.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/middleware.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/middleware_context.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/compression.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/http_connection.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/compression.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/http_server.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/version.h \
+ /home/gustavo/Documentos/FocusFlow/backend/Crow/include/crow/app.h \
  /usr/include/pqxx/pqxx /usr/include/pqxx/internal/header-pre.hxx \
  /usr/include/pqxx/internal/cxx-features.hxx \
  /usr/include/pqxx/config-public-compiler.h /usr/include/c++/13/ciso646 \

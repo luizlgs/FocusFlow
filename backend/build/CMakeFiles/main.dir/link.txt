@@ -1,1 +1,1 @@
-/usr/bin/g++ -g CMakeFiles/main.dir/src/main.cpp.o CMakeFiles/main.dir/src/RequestsDB.cpp.o -o main  -lpqxx -lpq 
+/usr/bin/c++ CMakeFiles/main.dir/src/main.cpp.o CMakeFiles/main.dir/src/RequestsDB.cpp.o -o main  -lpqxx -lpq 

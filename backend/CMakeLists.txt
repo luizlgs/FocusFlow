@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(step2pomodoro)
+project(focusflow)
 
 # O Crow exige pelo menos C++11 (Você está usando 20, ótimo!)
 set(CMAKE_CXX_STANDARD 17)
