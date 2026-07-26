@@ -299,7 +299,7 @@ do ponto onde parou. Chamada quando o app vai para segundo plano.
 ### `POST /delete_project` 🔒
 ### `POST /delete_pomodoro_session` 🔒
 
-Apagam permanentemente o recurso. As três rotas têm o mesmo formato.
+Apagam permanentemente o objeto. As três rotas têm o mesmo formato.
 
 **Requisição**
 ```json
