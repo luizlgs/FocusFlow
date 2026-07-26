@@ -1,6 +1,6 @@
 #include "../include/RequestsDB.hpp"
 
-RequestsDB::RequestsDB() : db_("dbname=postgres user=postgres password=1234 host=localhost port=5432") {}
+RequestsDB::RequestsDB() : db_("dbname=postgres user=postgres password=sua_senha_do_banco_de_dados host=localhost port=5432") {}
 
 
 using jwt_traits = jwt::traits::nlohmann_json;
