@@ -57,12 +57,12 @@
 
     <ScrollView
         android:id="@+id/new_project_scrollview"
-        android:layout_width="330dp"
+        android:layout_width="375dp"
         android:layout_height="336dp"
         android:background="@drawable/caixa_bordas_redondas"
         android:fillViewport="true"
         android:visibility="invisible"
-        tools:visibility="invisible"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
@@ -119,7 +119,7 @@
                 style="@style/editTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Data de entrega"
+                android:hint="Data de entrega (yyyy-mm-dd)"
                 android:textSize="14sp"
                 android:singleLine="true" />
 
@@ -128,7 +128,7 @@
                 style="@style/editTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Membros do projeto"
+                android:hint="E-mails dos membros separados por espaço"
                 android:textSize="14sp"
                 android:singleLine="true"/>
 
@@ -201,7 +201,7 @@
         android:background="@drawable/caixa_bordas_redondas"
         android:fillViewport="true"
         android:visibility="invisible"
-        tools:visibility="visible"
+        tools:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
