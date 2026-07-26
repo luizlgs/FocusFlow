@@ -197,7 +197,7 @@ public class ProjectInfoActivity extends AppCompatActivity {
             conclude_project.setImageResource(R.drawable.botao_nconcluir);
         else
             conclude_project.setImageResource(R.drawable.botao_concluir);
-        
+
         conclude_project.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

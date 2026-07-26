@@ -13,7 +13,7 @@ public class Acess {
     }
 
     public boolean sendLoginData(String email, String pass) {
-        DataRequests login = new DataRequests();
+        DataRequests login = new DataRequests(context);
         JSONObject user_data = new JSONObject();
         try {
             user_data.put("email", email);
@@ -37,6 +37,8 @@ public class Acess {
 
                     String pomodorosessions = json.getString("pomodorosessions");
 
+                    String token = json.getString("token");
+
                     SharedPreferences preferenciais = context.getSharedPreferences("BasicUserData", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferenciais.edit();
 
@@ -57,6 +59,9 @@ public class Acess {
                     //informacoes das pomodoro sessions
                     editor.putString("pomodorosessions", pomodorosessions);
 
+                    //token de autenticacao
+                    editor.putString("token", token);
+
                     Log.d("POMODOROINFO", pomodorosessions);
 
                     editor.apply();
@@ -73,7 +78,7 @@ public class Acess {
     }
 
     public boolean sendRegistryData(String name, String email, int age, String pass1, String pass2) {
-        DataRequests register = new DataRequests();
+        DataRequests register = new DataRequests(context);
         JSONObject user_data = new JSONObject();
         try {
             user_data.put("name", name);

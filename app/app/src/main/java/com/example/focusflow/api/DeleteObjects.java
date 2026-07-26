@@ -22,7 +22,7 @@ public class DeleteObjects {
         try {
             session_id_json.put("id", session_id);
 
-            DataRequests delete_session = new DataRequests();
+            DataRequests delete_session = new DataRequests(context);
 
             delete_session.sendData(session_id_json, "delete_pomodoro_session", new DataRequests.OnDataReceived() {
                 @Override
@@ -75,7 +75,7 @@ public class DeleteObjects {
         try {
             task_id_json.put("id", task_id);
 
-            DataRequests delete_task = new DataRequests();
+            DataRequests delete_task = new DataRequests(context);
 
             delete_task.sendData(task_id_json, "delete_task", new DataRequests.OnDataReceived() {
                 @Override
@@ -128,7 +128,7 @@ public class DeleteObjects {
         try {
             project_id_json.put("id", project_id);
 
-            DataRequests delete_project = new DataRequests();
+            DataRequests delete_project = new DataRequests(context);
 
             delete_project.sendData(project_id_json, "delete_project", new DataRequests.OnDataReceived() {
                 @Override

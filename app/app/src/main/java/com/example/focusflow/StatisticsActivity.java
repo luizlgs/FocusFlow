@@ -48,33 +48,34 @@ public class StatisticsActivity extends AppCompatActivity {
         }
     }
 
-    private void plotByDay(ArrayList<String> dates, int chartId, String label) {
+    private void plotByWeek(ArrayList<String> dates, int chartId, String label) {
         long dayMillis = 24L * 60 * 60 * 1000;
+        long weekMillis = 7 * dayMillis;
 
-        // corte de 3 meses e total de dias no período
+        // corte de 6 meses e total de semanas no período
         Calendar cut = Calendar.getInstance();
         cut.add(Calendar.MONTH, -6);
         long cutoff = cut.getTimeInMillis();
         long now = System.currentTimeMillis();
-        int totalDays = (int) ((now - cutoff) / dayMillis) + 1;
+        int totalWeeks = (int) ((now - cutoff) / weekMillis) + 1;
 
-        // conta por dia (dia 0 = ~3 meses atrás, totalDays-1 = hoje)
-        int[] perDay = new int[totalDays];
+        // conta por semana (semana 0 = ~6 meses atrás, totalWeeks-1 = semana atual)
+        int[] perWeek = new int[totalWeeks];
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         for (String d : dates) {
             try {
                 long ms = sdf.parse(d).getTime();
-                int dayIndex = (int) ((ms - cutoff) / dayMillis);
-                if (dayIndex < 0) dayIndex = 0;
-                if (dayIndex >= totalDays) dayIndex = totalDays - 1;
-                perDay[dayIndex]++;
+                int weekIndex = (int) ((ms - cutoff) / weekMillis);
+                if (weekIndex < 0) weekIndex = 0;
+                if (weekIndex >= totalWeeks) weekIndex = totalWeeks - 1;
+                perWeek[weekIndex]++;
             } catch (Exception e) { /* data inválida, ignora */ }
         }
 
-        // pontos: x = dia, y = quantidade
+        // pontos: x = semana, y = quantidade
         List<Entry> entries = new ArrayList<>();
-        for (int day = 0; day < totalDays; day++) {
-            entries.add(new Entry(day, perDay[day]));
+        for (int week = 0; week < totalWeeks; week++) {
+            entries.add(new Entry(week, perWeek[week]));
         }
 
         LineDataSet dataSet = new LineDataSet(entries, label);
@@ -96,7 +97,7 @@ public class StatisticsActivity extends AppCompatActivity {
         x.setPosition(XAxis.XAxisPosition.BOTTOM);
         x.setGranularity(1f);
         x.setAxisMinimum(0f);
-        x.setAxisMaximum(totalDays - 1);
+        x.setAxisMaximum(totalWeeks - 1);
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
@@ -114,8 +115,8 @@ public class StatisticsActivity extends AppCompatActivity {
         chart.setDragEnabled(true);
         chart.setScaleEnabled(true);
         chart.setPinchZoom(true);
-        chart.setVisibleXRangeMaximum(7f);     // ~1 semana por vez
-        chart.moveViewToX(totalDays - 1);      // começa nos dias mais recentes
+        chart.setVisibleXRangeMaximum(8f);     // ~2 meses (8 semanas) por vez
+        chart.moveViewToX(totalWeeks - 1);     // começa nas semanas mais recentes
 
         chart.invalidate();
     }
@@ -170,9 +171,9 @@ public class StatisticsActivity extends AppCompatActivity {
                     task_dates.add(current_task_completion_date);
             }
 
-            plotByDay(task_dates, R.id.tasksChart, "Tarefas concluídas");
-            plotByDay(session_dates, R.id.sessionsChart, "Sessões concluídas");
-            plotByDay(project_dates, R.id.projectsChart, "Projetos concluídos");
+            plotByWeek(task_dates, R.id.tasksChart, "Tarefas concluídas");
+            plotByWeek(session_dates, R.id.sessionsChart, "Sessões concluídas");
+            plotByWeek(project_dates, R.id.projectsChart, "Projetos concluídos");
 
 
         } catch (JSONException e) {

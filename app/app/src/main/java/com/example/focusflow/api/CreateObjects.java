@@ -31,7 +31,7 @@ public class CreateObjects {
             new_task.put("creator_id", user_id);
             new_task.put("priority", priority);
 
-            DataRequests create_task = new DataRequests();
+            DataRequests create_task = new DataRequests(context);
             boolean task_creation = create_task.sendData(new_task, "new_task", new DataRequests.OnDataReceived() {
                 @Override
                 public void onSuccess(JSONObject json) {
@@ -92,7 +92,7 @@ public class CreateObjects {
             new_project.put("members", members);
             new_project.put("creator_id", creator_id);
 
-            DataRequests create_project = new DataRequests();
+            DataRequests create_project = new DataRequests(context);
             boolean project_creation = create_project.sendData(new_project, "new_project", new DataRequests.OnDataReceived() {
                 @Override
                 public void onSuccess(JSONObject json) {
@@ -149,7 +149,7 @@ public class CreateObjects {
             new_pomodoro.put("blocks", session_blocks);
             new_pomodoro.put("creator_id", creator_id);
 
-            DataRequests create_pomodoro = new DataRequests();
+            DataRequests create_pomodoro = new DataRequests(context);
             create_pomodoro.sendData(new_pomodoro, "new_pomodoro", new DataRequests.OnDataReceived() {
                 @Override
                 public void onSuccess(JSONObject json) {

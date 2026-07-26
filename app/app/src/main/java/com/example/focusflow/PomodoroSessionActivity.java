@@ -2,6 +2,7 @@ package com.example.focusflow;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -83,10 +84,8 @@ public class PomodoroSessionActivity extends AppCompatActivity {
                 newButton.setText(pomodorosessions_json.getJSONObject(i).getString("title"));
                 pomodorosessionslayout.addView(newButton);
 
-                Log.e("Erroasasa",pomodorosessions_json.getJSONObject(i).getString("end_time"));
-
-
                 if(pomodorosessions_json.getJSONObject(i).getString("end_time").isEmpty()){
+                    newButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#80F44336")));
                     newButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -103,7 +102,7 @@ public class PomodoroSessionActivity extends AppCompatActivity {
                     });
                 }
                 else {
-
+                    newButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#804CAF50")));
                     newButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

@@ -1,5 +1,41 @@
 #include "../include/RequestsDB.hpp"
 
+RequestsDB::RequestsDB() : db_("dbname=postgres user=postgres password=1234 host=localhost port=5432") {}
+
+
+using jwt_traits = jwt::traits::nlohmann_json;
+
+static const std::string JWT_SECRET = std::getenv("JWT_SECRET") ? std::getenv("JWT_SECRET") : "8h~Z2}0+7*85";
+
+std::string RequestsDB::generate_token(int user_id) {
+    return jwt::create<jwt_traits>()
+        .set_type("JWT")
+        .set_issued_at(std::chrono::system_clock::now())
+        .set_expires_at(std::chrono::system_clock::now() + std::chrono::hours(24)) // validade de 24hrs
+        .set_payload_claim("user_id", std::to_string(user_id))
+        .sign(jwt::algorithm::hs256{JWT_SECRET});
+}
+
+std::optional<int> RequestsDB::verify_token(const std::string& token) {
+    try {
+        auto decoded = jwt::decode<jwt_traits>(token);
+
+        jwt::verify<jwt_traits>()
+            .allow_algorithm(jwt::algorithm::hs256{JWT_SECRET})
+            .verify(decoded); // lança exceção se assinatura ou validade (exp) forem inválidas
+
+        return std::stoi(decoded.get_payload_claim("user_id").as_string());
+    } catch (const std::exception& e) {
+        std::cerr << "Token inválido: " << e.what() << std::endl;
+        return std::nullopt;
+    }
+}
+
+std::optional<int> RequestsDB::authenticate(const crow::json::rvalue& user_data) {
+    if (!user_data.has("token")) return std::nullopt;
+    return verify_token(user_data["token"].s());
+}
+
 std::optional<pqxx::row> RequestsDB::login(std::string email, std::string pass) {
     //CROW_LOG_INFO << email << " " << pass;
     try {
@@ -7,9 +43,8 @@ std::optional<pqxx::row> RequestsDB::login(std::string email, std::string pass) 
             return std::nullopt;
         }
         //conexão com o banco de dados
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
             "SELECT * FROM Users WHERE email = $1;",
@@ -41,9 +76,8 @@ bool RequestsDB::register_(std::string name, std::string email, int age, std::st
     }
     try {
         //conexão com o banco de dados
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
             "SELECT * FROM Users WHERE email = $1;",
@@ -72,9 +106,8 @@ nlohmann::json RequestsDB::get_projects(int user_id){
     
     try {
         //conexão com o banco de dados
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
             "SELECT * FROM Projects WHERE $1 = ANY(members);",
@@ -149,8 +182,8 @@ nlohmann::json RequestsDB::get_projects(int user_id){
 nlohmann::json RequestsDB::get_tasks(int user_id){
     try {
         //conexão com o banco de dados
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
         pqxx::result rows = connection_.exec_params(
             "SELECT * FROM Tasks WHERE user_id = $1;",
             user_id
@@ -188,8 +221,8 @@ nlohmann::json RequestsDB::get_tasks(int user_id){
 nlohmann::json RequestsDB::get_pomodorosessions(int user_id){
     try {
         //conexão com o banco de dados
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
         pqxx::result rows = connection_.exec_params(
             "SELECT * FROM PomodoroSessions WHERE user_id = $1;",
             user_id
@@ -235,8 +268,8 @@ nlohmann::json RequestsDB::new_task(std::string title, std::string description, 
     try{
         if(has_a_empty_field({title, description, task_date, user_id, priority}) || is_in_past(task_date)) return nullptr;
         //conexão com o banco de dados
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
         pqxx::result rows = connection_.exec_params(
             "INSERT INTO Tasks (title, description, task_date, user_id, priority, task_state) "
             "VALUES ($1, $2, $3, $4, $5, false) "
@@ -267,8 +300,8 @@ nlohmann::json RequestsDB::new_task(std::string title, std::string description, 
 nlohmann::json RequestsDB::new_project(std::string title, std::string description, std::string start_date, std::string delivery_date, std::string members, std::string user_id) {
     if(is_in_past(delivery_date) || has_a_empty_field({title, description, start_date, delivery_date, members})) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         std::string membersIds = getMembersIds(members, connection_, user_id);
 
@@ -321,8 +354,8 @@ nlohmann::json RequestsDB::new_project(std::string title, std::string descriptio
 nlohmann::json RequestsDB::new_pomodoro(std::string title, std::string description, std::string user_id, std::string blocks, std::string short_pause, std::string big_pause){
     if(!is_a_valid_time(blocks) || !is_a_valid_time(short_pause) || !is_a_valid_time(big_pause) || has_a_empty_field({title, description})) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
 
         pqxx::result rows = connection_.exec_params(
@@ -358,25 +391,23 @@ nlohmann::json RequestsDB::new_pomodoro(std::string title, std::string descripti
 }
 
 
-nlohmann::json RequestsDB::end_project(std::string project_id) {
+nlohmann::json RequestsDB::end_project(std::string project_id, int user_id) {
     if(has_a_empty_field({project_id})) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
             "UPDATE Projects "
             "SET project_state = NOT project_state, "
-            "completion_date = CASE "
-            "WHEN project_state = false THEN CURRENT_DATE "
-            "ELSE NULL END "
-            "WHERE id = $1 "
+            "completion_date = CASE WHEN project_state = false THEN CURRENT_DATE ELSE NULL END "
+            "WHERE id = $1 AND user_id = $2 "
             "RETURNING id, project_state, completion_date;",
-            project_id
+            project_id, user_id
         );
 
         if (rows.empty()) {
-            throw std::runtime_error("Projeto não encontrado.");
+            return nlohmann::json::object();
         }
 
         connection_.commit();
@@ -394,30 +425,26 @@ nlohmann::json RequestsDB::end_project(std::string project_id) {
     }
 }
 
-nlohmann::json RequestsDB::end_task(std::string task_id) {
+nlohmann::json RequestsDB::end_task(std::string task_id, int user_id) {
     if(has_a_empty_field({task_id})) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
 
         pqxx::result rows = connection_.exec_params(
             "UPDATE Tasks "
             "SET task_state = NOT task_state, "
-            "completion_date = CASE "
-            "WHEN task_state = false THEN CURRENT_DATE "
-            "ELSE NULL END, "
-            "completion_time = CASE "
-            "WHEN task_state = false THEN CURRENT_TIME(0) "
-            "ELSE NULL END "
-            "WHERE id = $1 "
+            "completion_date = CASE WHEN task_state = false THEN CURRENT_DATE ELSE NULL END, "
+            "completion_time = CASE WHEN task_state = false THEN CURRENT_TIME(0) ELSE NULL END "
+            "WHERE id = $1 AND user_id = $2 "
             "RETURNING id, task_state, completion_date, completion_time;",
-            task_id
+            task_id, user_id
         );
 
 
         if (rows.empty()) {
-            throw std::runtime_error("Task não encontrada.");
+            return nlohmann::json::object();
         }
 
 
@@ -442,25 +469,22 @@ nlohmann::json RequestsDB::end_task(std::string task_id) {
     }
 }
 
-nlohmann::json RequestsDB::end_pomodoro_session(std::string session_id, std::string total_focus, std::string timer_) {
+nlohmann::json RequestsDB::end_pomodoro_session(std::string session_id, std::string total_focus, std::string timer_, int user_id) {
     if(has_a_empty_field({session_id, total_focus, timer_}) || !is_a_valid_time(total_focus) || !is_a_valid_time(timer_)) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
             "UPDATE PomodoroSessions "
-            "SET end_time = CURRENT_TIME(0), "
-            "date = CURRENT_DATE, "
-            "total_focus = $1, "
-            "timer = $2 "
-            "WHERE id = $3 "
+            "SET end_time = CURRENT_TIME(0), date = CURRENT_DATE, total_focus = $1, timer = $2 "
+            "WHERE id = $3 AND user_id = $4 "
             "RETURNING id, end_time, date, total_focus, timer;",
-            total_focus, timer_, session_id
+            total_focus, timer_, session_id, user_id
         );
 
         if (rows.empty()) {
-            throw std::runtime_error("Sessão pomodoro não encontrada.");
+            return nlohmann::json::object();
         }
 
         connection_.commit();
@@ -481,25 +505,25 @@ nlohmann::json RequestsDB::end_pomodoro_session(std::string session_id, std::str
     }
 }
 
-nlohmann::json RequestsDB::standby_pomodoro(std::string session_id, std::string total_focus, std::string timer, std::string small_pauses, std::string big_pauses, std::string is_pause) {
-    if(has_a_empty_field({session_id, is_pause}) || !is_a_valid_time(total_focus) || !is_a_valid_time(timer) || !is_a_valid_time(small_pauses) || !is_a_valid_time(big_pauses)) return nullptr;
+nlohmann::json RequestsDB::standby_pomodoro(std::string session_id, std::string total_focus, std::string timer, std::string small_pauses, std::string big_pauses, std::string is_pause, int user_id) {
+    if(has_a_empty_field({session_id, total_focus, timer, small_pauses, big_pauses, is_pause}) || !is_a_valid_time(total_focus) || !is_a_valid_time(timer) || std::stoi(small_pauses) < 0 || std::stoi(big_pauses) < 0) {
+            return nullptr;
+    }
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
             "UPDATE PomodoroSessions "
-            "SET timer = $1, "
-            "total_focus = $2, "
-            "small_pauses = $3, "
-            "big_pauses = $4, "
-            "is_pause = $5 "
-            "WHERE id = $6 "
+            "SET timer = $1, total_focus = $2, small_pauses = $3, big_pauses = $4, is_pause = $5 "
+            "WHERE id = $6 AND user_id = $7 "
             "RETURNING id, timer, total_focus, small_pauses, big_pauses, is_pause;",
-            timer, total_focus, small_pauses, big_pauses, is_pause, session_id
+            timer, total_focus, small_pauses, big_pauses, is_pause, session_id, user_id
         );
 
-        if (rows.empty()) throw std::runtime_error("Sessão pomodoro não encontrada.");
+        if (rows.empty()) {
+            return nlohmann::json::object();
+        }
 
         connection_.commit();
 
@@ -530,19 +554,19 @@ bool RequestsDB::verify_password(const std::string& password, const std::string&
     return crypto_pwhash_str_verify(stored_hash.c_str(), password.c_str(), password.size()) == 0;
 }
 
-nlohmann::json RequestsDB::delete_project(std::string project_id) {
+nlohmann::json RequestsDB::delete_project(std::string project_id, int user_id) {
     if(has_a_empty_field({project_id})) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
-            "DELETE FROM Projects WHERE id = $1 RETURNING id;",
-            project_id
+            "DELETE FROM Projects WHERE id = $1 AND user_id = $2 RETURNING id;",
+            project_id, user_id
         );
 
         if (rows.empty()) {
-            throw std::runtime_error("Projeto não encontrado.");
+            return nlohmann::json::object();
         }
 
         connection_.commit();
@@ -558,19 +582,19 @@ nlohmann::json RequestsDB::delete_project(std::string project_id) {
     }
 }
 
-nlohmann::json RequestsDB::delete_task(std::string task_id) {
+nlohmann::json RequestsDB::delete_task(std::string task_id, int user_id) {
     if(has_a_empty_field({task_id})) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
-            "DELETE FROM Tasks WHERE id = $1 RETURNING id;",
-            task_id
+            "DELETE FROM Tasks WHERE id = $1 AND user_id = $2 RETURNING id;",
+            task_id, user_id
         );
 
         if (rows.empty()) {
-            throw std::runtime_error("Tarefa não encontrada.");
+            return nlohmann::json::object();
         }
 
         connection_.commit();
@@ -586,19 +610,19 @@ nlohmann::json RequestsDB::delete_task(std::string task_id) {
     }
 }
 
-nlohmann::json RequestsDB::delete_pomodoro_session(std::string session_id) {
+nlohmann::json RequestsDB::delete_pomodoro_session(std::string session_id, int user_id) {
     if(has_a_empty_field({session_id})) return nullptr;
     try {
-        pqxx::connection db("dbname=postgres user=postgres password=1234 host=localhost port=5432");
-        pqxx::work connection_(db);
+        std::lock_guard<std::mutex> lock(db_mutex_);
+        pqxx::work connection_(db_);
 
         pqxx::result rows = connection_.exec_params(
-            "DELETE FROM PomodoroSessions WHERE id = $1 RETURNING id;",
-            session_id
+            "DELETE FROM PomodoroSessions WHERE id = $1 AND user_id = $2 RETURNING id;",
+            session_id, user_id
         );
 
         if (rows.empty()) {
-            throw std::runtime_error("Sessão pomodoro não encontrada.");
+            return nlohmann::json::object();
         }
 
         connection_.commit();

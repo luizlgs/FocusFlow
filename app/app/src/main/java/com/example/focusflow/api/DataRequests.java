@@ -1,5 +1,7 @@
 package com.example.focusflow.api;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import org.json.JSONObject;
 
@@ -16,6 +18,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DataRequests {
     private AtomicBoolean post_stat = new AtomicBoolean(false);
     private AtomicBoolean get_stat = new AtomicBoolean(false);
+    private Context context;
+
+    public DataRequests(Context context) {
+        this.context = context;
+    }
 
     public interface OnDataReceived {
         void onSuccess(JSONObject json);
@@ -26,7 +33,9 @@ public class DataRequests {
     public boolean sendData(JSONObject user_data, String dataType, OnDataReceived callback){
         Thread t = new Thread(() -> {
             try {
-
+                SharedPreferences preferences = context.getSharedPreferences("BasicUserData", Context.MODE_PRIVATE);
+                String token = preferences.getString("token", "");
+                user_data.put("token", token);
                 String user_data_string = user_data.toString();
 
                 URL url = new URL("http://192.168.18.8:18080/"+dataType);

@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Tarefas concluídas\n(6 meses)"
+                android:text="Tarefas concluídas por semana (6 meses)"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Sessões concluídas\n(6 meses)"
+                android:text="Sessões concluídas por semana (6 meses)"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Projetos concluídos\n(6 meses)"
+                android:text="Projetos concluídos por semana (6 meses)"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />

@@ -109,7 +109,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:hint="Senha"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:inputType="textPassword"/>
 
         <EditText
             android:id="@+id/register_pass_field2"
@@ -118,7 +119,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:hint="Repetir senha"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:inputType="textPassword"/>
 
 
     </LinearLayout>

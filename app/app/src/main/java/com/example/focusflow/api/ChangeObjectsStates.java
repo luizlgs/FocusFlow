@@ -21,7 +21,7 @@ public class ChangeObjectsStates {
 
         try{
             project_id_json.put("id", project_id);
-            DataRequests complete_project = new DataRequests();
+            DataRequests complete_project = new DataRequests(context);
             complete_project.sendData(project_id_json, "end_project", new DataRequests.OnDataReceived() {
                 @Override
                 public void onSuccess(JSONObject json) {
@@ -83,7 +83,7 @@ public class ChangeObjectsStates {
         try {
             task_id_json.put("id", task_id);
 
-            DataRequests complete_task = new DataRequests();
+            DataRequests complete_task = new DataRequests(context);
 
             complete_task.sendData(task_id_json, "end_task", new DataRequests.OnDataReceived() {
                 @Override
@@ -153,7 +153,7 @@ public class ChangeObjectsStates {
             session_id_json.put("total_focus", total_focus_formatted);
             session_id_json.put("timer", timer);
 
-            DataRequests complete_session = new DataRequests();
+            DataRequests complete_session = new DataRequests(context);
 
             complete_session.sendData(session_id_json, "end_pomodoro_session", new DataRequests.OnDataReceived() {
                 @Override
@@ -223,7 +223,7 @@ public class ChangeObjectsStates {
             session_data.put("big_pauses", String.valueOf(big_pauses));
             session_data.put("is_pause", String.valueOf(is_pause)); // "true"/"false"
 
-            DataRequests standby = new DataRequests();
+            DataRequests standby = new DataRequests(context);
             standby.sendData(session_data, "standby_pomodoro", new DataRequests.OnDataReceived() {
                 @Override
                 public void onSuccess(JSONObject json) {
