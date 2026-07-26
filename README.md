@@ -19,6 +19,7 @@ longo do tempo através de estatísticas.
 - Java
 - Android Studio
 - MPAndroidChart (gráficos)
+- Documentação da API: [docs/API.md](docs/API.md)
 
 **Backend**
 - C++17
@@ -82,6 +83,7 @@ FocusFlow/
 1. Abra a pasta `app/` no Android Studio.
 2. Ajuste o IP do servidor em `DataRequests.java` para o IP da máquina rodando o backend.
 3. Rode o app num emulador ou dispositivo físico na mesma rede.
+
 
 ## Licença
 
