@@ -16,22 +16,20 @@ longo do tempo através de estatísticas.
 ## Tecnologias
 
 **Frontend (Android)**
-- Java
-- Android Studio
-- MPAndroidChart (gráficos)
-- Documentação da API: [docs/API.md](docs/API.md)
+- **Java** — linguagem nativa do Android, usada para todas as telas e a lógica do app.
+- **Android Studio** — IDE oficial para desenvolvimento e depuração no dispositivo.
+- **MPAndroidChart** — biblioteca de gráficos usada para plotar as estatísticas de conclusão.
 
 **Backend**
-- C++17
-- [Crow](https://github.com/CrowCpp/Crow) (framework web)
-- libpqxx (acesso ao PostgreSQL)
-- nlohmann/json
-- libsodium (hash de senhas com Argon2id)
-- [jwt-cpp](https://github.com/Thalhammer/jwt-cpp) (geração e validação de tokens JWT)
-- OpenSSL (assinatura HMAC dos tokens)
+- **C++17** — linguagem base do servidor, escolhida pelo desempenho e pelo controle sobre os recursos.
+- **[Crow](https://github.com/CrowCpp/Crow)** — estabelece a relação de servidor e cliente via HTTP entre o app e o backend.
+- **libpqxx** — realiza as requisições ao PostgreSQL de forma segura, através de queries parametrizadas.
+- **nlohmann/json** — monta e retorna os dados no formato JSON usado na comunicação com o app.
+- **libsodium** — gera os hashes usados para armazenar as senhas dos usuários.
+- **[jwt-cpp](https://github.com/Thalhammer/jwt-cpp)** — gera os tokens de validação que autenticam os usuários nas requisições.
 
 **Banco de dados**
-- PostgreSQL
+- **PostgreSQL** — armazena usuários, projetos, tarefas e sessões Pomodoro.
 
 ## Segurança
 
