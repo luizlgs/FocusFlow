@@ -5,7 +5,7 @@ RequestsDB::RequestsDB() : db_("dbname=postgres user=postgres password=1234 host
 
 using jwt_traits = jwt::traits::nlohmann_json;
 
-static const std::string JWT_SECRET = std::getenv("JWT_SECRET") ? std::getenv("JWT_SECRET") : "8h~Z2}0+7*85";
+static const std::string JWT_SECRET = std::getenv("JWT_SECRET") ? std::getenv("JWT_SECRET") : "sua_chave_jwt_aqui";
 
 std::string RequestsDB::generate_token(int user_id) {
     return jwt::create<jwt_traits>()
